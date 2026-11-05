@@ -1,1 +1,468 @@
-# Jr-games
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JR GAMES</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+ background:#080b18;color:white;
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+}
+header{
+ background:#11182d;text-align:center;
+ padding:25px 10px;
+ border-bottom:2px solid #00eaff;
+ box-shadow:0 0 20px #00eaff33;
+}
+header h1{color:#00eaff;font-size:32px}
+header p{color:#aaa;margin-top:8px}
+.container{max-width:1000px;margin:auto;padding:20px}
+.search{
+ width:100%;padding:15px;
+ background:#151c32;color:white;
+ border:2px solid #00eaff;
+ border-radius:12px;font-size:16px;
+ margin:15px 0 25px;
+}
+.game-list{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:18px;
+}
+.game-card{
+ background:linear-gradient(145deg,#182440,#101629);
+ padding:25px 15px;border-radius:16px;
+ border:1px solid #263653;
+ text-align:center;
+ transition:.3s;
+}
+.game-card:hover{
+ transform:translateY(-5px);
+ border-color:#00eaff;
+ box-shadow:0 0 20px #00eaff44;
+}
+.emoji{font-size:48px;margin-bottom:12px}
+.game-card h2{color:#00eaff;margin-bottom:10px}
+.game-card p{color:#aaa;min-height:38px}
+button{
+ background:#00d9ff;color:#07111d;
+ border:0;padding:12px 20px;
+ border-radius:9px;font-weight:bold;
+ cursor:pointer;margin:6px;
+ transition:.2s;
+}
+button:hover{background:#00ff99;transform:scale(1.04)}
+button:active{transform:scale(.96)}
+.game-screen{
+ display:none;text-align:center;
+ background:#11182d;padding:20px;
+ border:1px solid #00eaff;
+ border-radius:15px;margin-top:20px;
+}
+.game-screen h2{color:#00eaff;margin:10px}
+.info{color:#00ff99;font-size:20px;margin:15px}
+canvas{
+ background:#050a12;
+ border:2px solid #00eaff;
+ border-radius:8px;
+ max-width:100%;
+}
+.grid{
+ display:grid;gap:8px;
+ justify-content:center;margin:20px auto;
+}
+.ttt{grid-template-columns:repeat(3,85px)}
+.ttt button{
+ width:85px;height:85px;
+ font-size:35px;margin:0;
+}
+.memory{grid-template-columns:repeat(4,65px)}
+.memory button{
+ width:65px;height:65px;
+ font-size:25px;margin:0;padding:5px;
+}
+.choice{font-size:55px;margin:15px}
+.controls button{min-width:60px}
+footer{text-align:center;padding:25px;color:#888}
+.hidden{display:none!important}
+@media(max-width:400px){
+ .container{padding:12px}
+ .ttt{grid-template-columns:repeat(3,75px)}
+ .ttt button{width:75px;height:75px}
+ .memory{grid-template-columns:repeat(4,58px)}
+ .memory button{width:58px;height:58px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🎮 JR GAMES</h1>
+<p>Play Games • Have Fun • Enjoy!</p>
+</header>
+
+<div class="container">
+
+<input class="search" id="search"
+placeholder="🔍 Search Games..."
+oninput="searchGames()">
+
+<div class="game-list" id="gameList">
+
+<div class="game-card" data-name="snake">
+<div class="emoji">🐍</div>
+<h2>Snake Game</h2>
+<p>Eat food and make a high score!</p>
+<button onclick="openGame('snake')">PLAY NOW</button>
+</div>
+
+<div class="game-card" data-name="tic tac toe">
+<div class="emoji">⭕</div>
+<h2>Tic Tac Toe</h2>
+<p>Play X and O with your friend!</p>
+<button onclick="openGame('ttt')">PLAY NOW</button>
+</div>
+
+<div class="game-card" data-name="rock paper scissors">
+<div class="emoji">✊</div>
+<h2>Rock Paper Scissors</h2>
+<p>Challenge the computer!</p>
+<button onclick="openGame('rps')">PLAY NOW</button>
+</div>
+
+<div class="game-card" data-name="memory match">
+<div class="emoji">🧠</div>
+<h2>Memory Match</h2>
+<p>Find matching emoji pairs!</p>
+<button onclick="openGame('memory')">PLAY NOW</button>
+</div>
+
+</div>
+
+<!-- SNAKE -->
+<section class="game-screen" id="snake">
+<h2>🐍 Snake Game</h2>
+<div class="info">Score: <span id="snakeScore">0</span></div>
+<canvas id="canvas" width="320" height="320"></canvas>
+<div class="controls">
+<div><button onclick="move('UP')">⬆️</button></div>
+<div>
+<button onclick="move('LEFT')">⬅️</button>
+<button onclick="move('DOWN')">⬇️</button>
+<button onclick="move('RIGHT')">➡️</button>
+</div>
+</div>
+<p id="snakeMessage">Eat the red food!</p>
+<button onclick="startSnake()">RESTART</button>
+<button onclick="home()">HOME</button>
+</section>
+
+<!-- TIC TAC TOE -->
+<section class="game-screen" id="ttt">
+<h2>⭕ Tic Tac Toe</h2>
+<div class="info" id="tttStatus">Player X's Turn</div>
+<div class="grid ttt" id="tttGrid"></div>
+<button onclick="resetTTT()">RESTART</button>
+<button onclick="home()">HOME</button>
+</section>
+
+<!-- ROCK PAPER SCISSORS -->
+<section class="game-screen" id="rps">
+<h2>✊ Rock Paper Scissors</h2>
+<p>Choose your move!</p>
+<div class="choice" id="rpsResult">🤔</div>
+<div class="info" id="rpsStatus">You: 0 | Computer: 0</div>
+<button onclick="playRPS('✊')">✊ Rock</button>
+<button onclick="playRPS('✋')">✋ Paper</button>
+<button onclick="playRPS('✌️')">✌️ Scissors</button>
+<br>
+<button onclick="resetRPS()">RESTART</button>
+<button onclick="home()">HOME</button>
+</section>
+
+<!-- MEMORY GAME -->
+<section class="game-screen" id="memory">
+<h2>🧠 Memory Match</h2>
+<div class="info">Moves: <span id="moves">0</span> | Pairs: <span id="pairs">0</span></div>
+<div class="grid memory" id="memoryGrid"></div>
+<p id="memoryStatus">Find all matching pairs!</p>
+<button onclick="startMemory()">RESTART</button>
+<button onclick="home()">HOME</button>
+</section>
+
+</div>
+
+<footer>
+<p>© 2026 JR GAMES | All Rights Reserved</p>
+<p>Made with ❤️ by JR</p>
+</footer>
+
+<script>
+let currentGame=null;
+let snakeTimer=null;
+
+// SEARCH
+function searchGames(){
+ let v=document.getElementById('search').value.toLowerCase();
+ document.querySelectorAll('.game-card').forEach(card=>{
+ card.style.display=card.dataset.name.includes(v)?'block':'none';
+ });
+}
+
+// OPEN GAME
+function openGame(id){
+ stopAll();
+ document.getElementById('gameList').classList.add('hidden');
+ document.getElementById('search').classList.add('hidden');
+ document.querySelectorAll('.game-screen').forEach(g=>g.style.display='none');
+ document.getElementById(id).style.display='block';
+ currentGame=id;
+
+ if(id==='snake')startSnake();
+ if(id==='ttt')resetTTT();
+ if(id==='rps')resetRPS();
+ if(id==='memory')startMemory();
+}
+
+function home(){
+ stopAll();
+ document.querySelectorAll('.game-screen').forEach(g=>g.style.display='none');
+ document.getElementById('gameList').classList.remove('hidden');
+ document.getElementById('search').classList.remove('hidden');
+ currentGame=null;
+}
+
+function stopAll(){
+ clearInterval(snakeTimer);
+}
+
+// SNAKE GAME
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+const size=16;
+let snake,food,dir,score,alive;
+
+function startSnake(){
+ clearInterval(snakeTimer);
+ snake=[
+ {x:160,y:160},
+ {x:144,y:160},
+ {x:128,y:160}
+ ];
+ dir='RIGHT';score=0;alive=true;
+ document.getElementById('snakeScore').textContent=0;
+ document.getElementById('snakeMessage').textContent='Eat the red food!';
+ makeFood();
+ snakeTimer=setInterval(drawSnake,120);
+}
+
+function makeFood(){
+ do{
+ food={
+ x:Math.floor(Math.random()*20)*size,
+ y:Math.floor(Math.random()*20)*size
+ };
+ }while(snake.some(p=>p.x===food.x&&p.y===food.y));
+}
+
+function move(d){
+ if(!alive)return;
+ if(d==='UP'&&dir!=='DOWN')dir='UP';
+ if(d==='DOWN'&&dir!=='UP')dir='DOWN';
+ if(d==='LEFT'&&dir!=='RIGHT')dir='LEFT';
+ if(d==='RIGHT'&&dir!=='LEFT')dir='RIGHT';
+}
+
+function drawSnake(){
+ ctx.fillStyle='#050a12';
+ ctx.fillRect(0,0,320,320);
+
+ ctx.fillStyle='#ff3355';
+ ctx.fillRect(food.x,food.y,size,size);
+
+ let head={...snake[0]};
+ if(dir==='UP')head.y-=size;
+ if(dir==='DOWN')head.y+=size;
+ if(dir==='LEFT')head.x-=size;
+ if(dir==='RIGHT')head.x+=size;
+
+ let eating=head.x===food.x&&head.y===food.y;
+
+ if(head.x<0||head.y<0||head.x>=320||head.y>=320||
+ snake.some((p,i)=>
+ (eating||i<snake.length-1)&&p.x===head.x&&p.y===head.y
+ )){
+ alive=false;
+ clearInterval(snakeTimer);
+ document.getElementById('snakeMessage').textContent='GAME OVER! Score: '+score;
+ return;
+ }
+
+ snake.unshift(head);
+
+ if(eating){
+ score+=10;
+ document.getElementById('snakeScore').textContent=score;
+ makeFood();
+ }else snake.pop();
+
+ snake.forEach((p,i)=>{
+ ctx.fillStyle=i===0?'#00ff99':'#00d9ff';
+ ctx.fillRect(p.x,p.y,size-2,size-2);
+ });
+}
+
+// KEYBOARD
+document.addEventListener('keydown',e=>{
+ const keys={
+ ArrowUp:'UP',ArrowDown:'DOWN',
+ ArrowLeft:'LEFT',ArrowRight:'RIGHT',
+ w:'UP',s:'DOWN',a:'LEFT',d:'RIGHT'
+ };
+ if(currentGame==='snake'&&keys[e.key]){
+ e.preventDefault();move(keys[e.key]);
+ }
+});
+
+// TIC TAC TOE
+let board,turn,tttOver;
+
+function resetTTT(){
+ board=Array(9).fill('');
+ turn='X';tttOver=false;
+ document.getElementById('tttStatus').textContent="Player X's Turn";
+ renderTTT();
+}
+
+function renderTTT(){
+ let grid=document.getElementById('tttGrid');
+ grid.innerHTML='';
+ board.forEach((v,i)=>{
+ let b=document.createElement('button');
+ b.textContent=v;
+ b.style.color=v==='X'?'#00eaff':'#ff55aa';
+ b.onclick=()=>playTTT(i);
+ grid.appendChild(b);
+ });
+}
+
+function playTTT(i){
+ if(board[i]||tttOver)return;
+ board[i]=turn;
+ let win=[
+ [0,1,2],[3,4,5],[6,7,8],
+ [0,3,6],[1,4,7],[2,5,8],
+ [0,4,8],[2,4,6]
+ ].some(line=>line.every(n=>board[n]===turn));
+
+ if(win){
+ tttOver=true;
+ document.getElementById('tttStatus').textContent='🎉 Player '+turn+' Wins!';
+ }else if(board.every(Boolean)){
+ tttOver=true;
+ document.getElementById('tttStatus').textContent="It's a Draw!";
+ }else{
+ turn=turn==='X'?'O':'X';
+ document.getElementById('tttStatus').textContent="Player "+turn+"'s Turn";
+ }
+ renderTTT();
+}
+
+// ROCK PAPER SCISSORS
+let you=0,computer=0;
+
+function playRPS(choice){
+ let options=['✊','✋','✌️'];
+ let bot=options[Math.floor(Math.random()*3)];
+ let result='Draw!';
+ if(choice!==bot){
+ if((choice==='✊'&&bot==='✌️')||
+ (choice==='✋'&&bot==='✊')||
+ (choice==='✌️'&&bot==='✋')){
+ you++;result='🎉 You Win!';
+ }else{
+ computer++;result='😢 Computer Wins!';
+ }
+ }
+ document.getElementById('rpsResult').textContent=choice+' VS '+bot;
+ document.getElementById('rpsStatus').textContent=
+ result+' | You: '+you+' | Computer: '+computer;
+}
+
+function resetRPS(){
+ you=0;computer=0;
+ document.getElementById('rpsResult').textContent='🤔';
+ document.getElementById('rpsStatus').textContent='You: 0 | Computer: 0';
+}
+
+// MEMORY MATCH
+let cards=[],first=null,locked=false,moves=0,pairs=0;
+
+function startMemory(){
+ let emojis=['🍎','🍌','🍇','🍒','🍕','⚽','🚀','💎'];
+ cards=[...emojis,...emojis].sort(()=>Math.random()-.5);
+ first=null;locked=false;moves=0;pairs=0;
+ document.getElementById('moves').textContent=0;
+ document.getElementById('pairs').textContent=0;
+ document.getElementById('memoryStatus').textContent='Find all matching pairs!';
+ renderMemory();
+}
+
+function renderMemory(){
+ let grid=document.getElementById('memoryGrid');
+ grid.innerHTML='';
+ cards.forEach((emoji,i)=>{
+ let b=document.createElement('button');
+ b.textContent=emoji.open||emoji.matched?emoji:'❔';
+ if(emoji.matched)b.style.background='#00ff99';
+ b.onclick=()=>flipCard(i);
+ grid.appendChild(b);
+ });
+}
+
+function flipCard(i){
+ if(locked||cards[i].matched||cards[i].open)return;
+ cards[i].open=true;
+ renderMemory();
+
+ if(first===null){
+ first=i;return;
+ }
+
+ moves++;
+ document.getElementById('moves').textContent=moves;
+
+ if(cards[first]===cards[i]){
+ // This comparison is corrected below using the saved emoji value.
+ }
+ let a=cards[first],b=cards[i];
+
+ if(a===b){
+ a.matched=true;b.matched=true;
+ pairs++;
+ document.getElementById('pairs').textContent=pairs;
+ first=null;
+ renderMemory();
+ if(pairs===8){
+ document.getElementById('memoryStatus').textContent='🎉 YOU WIN! Moves: '+moves;
+ }
+ }else{
+ locked=true;
+ setTimeout(()=>{
+ cards[first].open=false;
+ cards[i].open=false;
+ first=null;locked=false;
+ renderMemory();
+ },700);
+ }
+}
+</script>
+</body>
+</html>cards=emojis.concat(emojis)
+.sort(()=>Math.random()-.5)
+.map(emoji=>({emoji,open:false,matched:false}));ta 8
