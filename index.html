@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -7,289 +6,88 @@
 <title>JR GAMES</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#090d18;color:white;font-family:Arial,sans-serif}
-header{background:#111a30;padding:22px;text-align:center;border-bottom:2px solid #00eaff}
-header h1{color:#00eaff;margin:0;font-size:32px}
-header p{color:#aaa}
-nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:15px}
-button{cursor:pointer;border:0;border-radius:8px;padding:11px 16px;background:#00c9df;color:#00121a;font-weight:bold}
-input{padding:13px;border:1px solid #00c9df;background:#111a30;color:white;border-radius:9px;width:90%;max-width:500px}
-.search{text-align:center;margin:10px}
-#games{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:13px;padding:15px}
-.game{background:#151e33;border:1px solid #273d60;border-radius:12px;padding:18px 8px;text-align:center;transition:.2s}
-.game:hover{transform:translateY(-4px);border-color:#00eaff}
-.emoji{font-size:35px}
-.game h3{font-size:15px;min-height:35px}
-.game button{width:90%;padding:9px}
-#playArea{display:none;position:fixed;inset:0;background:#090d18;z-index:10;overflow:auto;padding:20px;text-align:center}
-#playArea h2{color:#00eaff}
-#gameBox{max-width:500px;margin:25px auto;background:#151e33;padding:25px;border-radius:15px;min-height:220px}
-#gameBox button{margin:6px}
-footer{text-align:center;color:#888;padding:25px}
+body{
+ margin:0;
+ background:#090d18;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:22px;
+ background:#121a2b;
+ display:flex;
+ justify-content:space-between;
+}
+.logo{font-size:25px;font-weight:bold}
+.logo span{color:#22d3ee}
+.hero{
+ padding:65px 20px;
+ text-align:center;
+}
+.hero h1{font-size:48px}
+.hero h1 span{color:#22d3ee}
+button{
+ background:#7c5cff;
+ color:white;
+ border:0;
+ padding:12px 20px;
+ border-radius:10px;
+ cursor:pointer;
+}
+main{padding:20px}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:20px;
+}
+.card{
+ background:#172238;
+ padding:20px;
+ border-radius:15px;
+}
+.thumb{
+ background:#263a66;
+ padding:35px;
+ text-align:center;
+ font-size:45px;
+ border-radius:10px;
+}
+.card p{color:#aab5cc}
+footer{
+ text-align:center;
+ padding:25px;
+ color:#aaa;
+}
 </style>
 </head>
 <body>
 
 <header>
-<h1>🎮 JR GAMES</h1>
-<p>Welcome to the Ultimate Gaming World</p>
-<h3>109 Games | Play & Enjoy</h3>
+ <div class="logo">JR <span>GAMES</span></div>
 </header>
 
-<nav>
-<button onclick="showGames('all')">All Games</button>
-<button onclick="showGames('puzzle')">Puzzle</button>
-<button onclick="showGames('action')">Action</button>
-<button onclick="showGames('quiz')">Quiz</button>
-<button onclick="showGames('arcade')">Arcade</button>
-<button onclick="showFavorites()">❤️ Favorites</button>
-</nav>
+<section class="hero">
+ <h1>PLAY. CREATE.<br><span>REPEAT.</span></h1>
+ <p>Welcome to JR GAMES</p>
+ <button onclick="document.getElementById('games').scrollIntoView()">
+ Explore Games
+ </button>
+</section>
 
-<div class="search">
-<input id="search" placeholder="🔍 Search your favorite game..." oninput="searchGames()">
-</div>
-
-<div id="games"></div>
-
-<div id="playArea">
-<button onclick="closeGame()" style="float:right">✖ Close</button>
-<h2 id="gameTitle">JR GAME</h2>
-<div id="gameBox"></div>
-</div>
+<main id="games">
+ <h2>🎮 Featured Games</h2>
+ <div class="grid" id="gameGrid">
+  <div class="card">
+   <div class="thumb">🚀</div>
+   <h3>Coming Soon</h3>
+   <p>Our first game is coming soon!</p>
+  </div>
+ </div>
+</main>
 
 <footer>
-<h2>JR GAMES</h2>
-<p>Made with ❤️ by JR GAMES</p>
+ © 2026 JR GAMES. All Rights Reserved.
 </footer>
 
-<script>
-const names = [
-"Snake Game","Tic Tac Toe","Rock Paper Scissors","Memory Match",
-"2048 Puzzle","Number Guess","Reaction Test","Whack A Mole",
-"Quick Quiz","Flappy Bird","Space Shooter","Car Racing",
-"Bubble Shooter","Color Match","Math Challenge","Typing Master",
-"Word Puzzle","Sudoku","Chess","Checkers",
-"Ping Pong","Breakout","Pong","Dino Run",
-"Jumping Ball","Fruit Slice","Basketball","Football",
-"Knife Hit","Stack Tower","Helix Jump","Color Switch",
-"Pac Man","Minesweeper","Connect Four","Hangman",
-"Simon Says","Light Puzzle","Block Puzzle","Jigsaw Puzzle",
-"Word Search","Crossword","Find The Difference","Maze Runner",
-"Escape Room","Treasure Hunt","Gold Miner","Fishing Game",
-"Penalty Shootout","Car Parking","Bike Racing","Motorcycle Stunt",
-"Plane Shooter","Tank Battle","Zombie Attack","Ninja Run",
-"Samurai Fight","Robot War","Alien Invasion","Space Adventure",
-"Tower Defense","Castle Defender","Archery","Bowling",
-"Pool Game","Golf Challenge","Darts","Baseball",
-"Volleyball","Badminton","Ice Hockey","Skateboard",
-"Snowboard","Ski Race","Running Race","Obstacle Course",
-"Platform Jump","Bubble Pop","Ball Sort","Water Sort",
-"Color Puzzle","Number Merge","Tile Match","Mahjong",
-"Solitaire","Sudoku Master","Memory Cards","Pattern Match",
-"Speed Clicker","Tap Challenge","Fast Fingers","Typing Race",
-"English Quiz","Science Quiz","History Quiz","GK Quiz",
-"Animal Quiz","Flag Quiz","Logo Quiz","Riddle Master",
-"Brain Test","Logic Master","Shape Match","Crazy Jump",
-"Monster Dash","Super Runner","Fire And Water"
-];
-
-const emojis=[
-"🐍","❌","✊","🧠","🔢","🎯","⚡","🔨","❓","🐦",
-"🚀","🏎️","🫧","🎨","➗","⌨️","🔤","🧩","♟️","⚫",
-"🏓","🧱","🎾","🦖","⚽","🍉","🏀","⚽","🔪","🗼"
-];
-
-const categories=[
-"arcade","puzzle","arcade","puzzle","puzzle","quiz","arcade","arcade",
-"quiz","arcade","action","action","arcade","puzzle","quiz"
-];
-
-let favorites=JSON.parse(localStorage.getItem("jrFav")||"[]");
-let current=0;
-let score=0;
-let timer;
-let timeLeft=20;
-
-const container=document.getElementById("games");
-
-function category(i){
-return categories[i%categories.length];
-}
-
-function render(list){
-container.innerHTML="";
-list.forEach(i=>{
-let div=document.createElement("div");
-div.className="game";
-div.innerHTML=`
-<div class="emoji">${emojis[i%emojis.length]}</div>
-<h3>${i+1}. ${names[i]}</h3>
-<button onclick="startGame(${i})">▶ PLAY</button>
-<button onclick="favorite(${i})" style="background:#ffcc55;margin-top:6px">
-${favorites.includes(i)?"❤️":"🤍"}
-</button>`;
-container.appendChild(div);
-});
-}
-
-function showGames(cat){
-let arr=names.map((n,i)=>i).filter(i=>cat==="all"||category(i)===cat);
-render(arr);
-}
-
-function searchGames(){
-let q=document.getElementById("search").value.toLowerCase();
-render(names.map((n,i)=>i).filter(i=>names[i].toLowerCase().includes(q)));
-}
-
-function favorite(i){
-if(favorites.includes(i)){
-favorites=favorites.filter(x=>x!==i);
-}else favorites.push(i);
-localStorage.setItem("jrFav",JSON.stringify(favorites));
-showGames("all");
-}
-
-function showFavorites(){
-render(favorites);
-}
-
-function startGame(i){
-current=i;
-score=0;
-timeLeft=20;
-clearInterval(timer);
-document.getElementById("playArea").style.display="block";
-document.getElementById("gameTitle").textContent=names[i];
-launchMode(i%5);
-}
-
-function closeGame(){
-clearInterval(timer);
-document.getElementById("playArea").style.display="none";
-}
-
-function box(html){
-document.getElementById("gameBox").innerHTML=html;
-}
-
-function launchMode(mode){
-if(mode===0) tapGame();
-if(mode===1) guessGame();
-if(mode===2) rpsGame();
-if(mode===3) quizGame();
-if(mode===4) memoryGame();
-}
-
-// Game 1: Tap Challenge
-function tapGame(){
-score=0;
-box(`<h3>⚡ ২০ সেকেন্ডে যত বেশি সম্ভব ক্লিক করো!</h3>
-<h2 id="score">Score: 0</h2>
-<h2 id="clock">20</h2>
-<button onclick="tap()">TAP ME!</button>`);
-timer=setInterval(()=>{
-timeLeft--;
-let c=document.getElementById("clock");
-if(c)c.textContent=timeLeft;
-if(timeLeft<=0){
-clearInterval(timer);
-box(`<h2>⏰ Game Over!</h2><h2>Your Score: ${score}</h2><button onclick="tapGame()">Play Again</button>`);
-}
-},1000);
-}
-function tap(){
-if(timeLeft<=0)return;
-score++;
-document.getElementById("score").textContent="Score: "+score;
-}
-
-// Game 2: Number Guess
-function guessGame(){
-let answer=Math.floor(Math.random()*20)+1;
-box(`<h3>১ থেকে ২০-এর মধ্যে সংখ্যা অনুমান করো!</h3>
-<input id="guess" type="number" placeholder="Enter number">
-<button onclick="checkGuess()">CHECK</button>
-<p id="result"></p>`);
-window.checkGuess=function(){
-let n=Number(document.getElementById("guess").value);
-document.getElementById("result").textContent=
-n===answer?"🎉 Correct! You Win!":n<answer?"আরও বড় সংখ্যা দাও!":"আরও ছোট সংখ্যা দাও!";
-};
-}
-
-// Game 3: Rock Paper Scissors
-function rpsGame(){
-box(`<h3>Choose Your Move</h3>
-<button onclick="rps('Rock')">✊ Rock</button>
-<button onclick="rps('Paper')">✋ Paper</button>
-<button onclick="rps('Scissors')">✌️ Scissors</button>
-<h3 id="rpsResult"></h3>`);
-window.rps=function(user){
-let choices=["Rock","Paper","Scissors"];
-let cpu=choices[Math.floor(Math.random()*3)];
-let result=user===cpu?"Draw!":
-(user==="Rock"&&cpu==="Scissors"||
-user==="Paper"&&cpu==="Rock"||
-user==="Scissors"&&cpu==="Paper")?"You Win!":"You Lose!";
-document.getElementById("rpsResult").textContent=
-"You: "+user+" | Computer: "+cpu+" | "+result;
-};
-}
-
-// Game 4: Quiz
-function quizGame(){
-let questions=[
-["বাংলাদেশের রাজধানী কোনটি?","ঢাকা","চট্টগ্রাম","ঢাকা"],
-["সূর্য কোন দিক থেকে ওঠে?","পূর্ব","পশ্চিম","পূর্ব"],
-["2 + 5 = কত?","7","8","7"],
-["পৃথিবীর উপগ্রহ কোনটি?","চাঁদ","সূর্য","চাঁদ"],
-["এক সপ্তাহে কয় দিন?","৭","৮","৭"]
-];
-let q=questions[Math.floor(Math.random()*questions.length)];
-box(`<h3>${q[0]}</h3>
-<button onclick="quizAnswer('${q[1]}')">${q[1]}</button>
-<button onclick="quizAnswer('${q[2]}')">${q[2]}</button>
-<h3 id="quizResult"></h3>`);
-window.quizAnswer=function(a){
-document.getElementById("quizResult").textContent=
-a===q[3]?"🎉 Correct Answer!":"❌ Wrong Answer!";
-};
-}
-
-// Game 5: Memory Match
-function memoryGame(){
-let symbols=["🍎","🍌","🍇","🍉","🍒","🍓"];
-let cards=[...symbols,...symbols].sort(()=>Math.random()-.5);
-let opened=[],matched=[];
-function draw(){
-box(`<h3>একই রকম দুটি ফল খুঁজে বের করো!</h3>
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-${cards.map((c,i)=>`<button style="height:65px;font-size:24px" onclick="flip(${i})">${matched.includes(i)||opened.includes(i)?c:"❔"}</button>`).join("")}
-</div><p>Matched: ${matched.length/2}/6</p>`);
-}
-window.flip=function(i){
-if(opened.length===2||opened.includes(i)||matched.includes(i))return;
-opened.push(i);
-if(opened.length===2){
-draw();
-if(cards[opened[0]]===cards[opened[1]]){
-matched.push(...opened);
-opened=[];
-if(matched.length===12){
-box("<h2>🏆 You Win!</h2><button onclick='memoryGame()'>Play Again</button>");
-return;
-}
-setTimeout(draw,300);
-}else{
-setTimeout(()=>{opened=[];draw()},700);
-}
-}else draw();
-};
-draw();
-}
-
-render(names.map((n,i)=>i));
-</script>
 </body>
 </html>
