@@ -309,5 +309,316 @@ function backHome() {
 function searchGame() {
     let value = document.getElementById("search").value.toLowerCase();
 
+    document.getElementById("snakeCard").style.display =<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JR GAMES</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080b18;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #11182d;
+    padding: 22px;
+    text-align: center;
+    border-bottom: 2px solid #00eaff;
+}
+
+header h1 {
+    color: #00eaff;
+    font-size: 32px;
+}
+
+header p {
+    color: #aaa;
+    margin-top: 8px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+
+.search {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 2px solid #00eaff;
+    background: #151c32;
+    color: white;
+    font-size: 16px;
+    margin: 20px 0;
+}
+
+.game-card {
+    background: #151c32;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid #263653;
+}
+
+.game-card h2 {
+    color: #00eaff;
+    margin-bottom: 10px;
+}
+
+button {
+    background: #00d9ff;
+    color: #07111d;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 8px;
+}
+
+button:hover {
+    background: #00ff99;
+}
+
+#gameArea {
+    display: none;
+    text-align: center;
+    margin-top: 25px;
+}
+
+canvas {
+    background: #050a12;
+    border: 3px solid #00eaff;
+    border-radius: 8px;
+    max-width: 100%;
+}
+
+.score {
+    color: #00ff99;
+    font-size: 20px;
+    margin: 15px;
+}
+
+.controls {
+    margin-top: 15px;
+}
+
+.controls button {
+    width: 65px;
+    height: 50px;
+    font-size: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #888;
+    margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎮 JR GAMES</h1>
+    <p>Play Games • Have Fun • Enjoy!</p>
+</header>
+
+<div class="container">
+
+    <input
+        class="search"
+        type="text"
+        id="search"
+        placeholder="🔍 Search Games..."
+        oninput="searchGame()"
+    >
+
+    <div class="game-card" id="snakeCard">
+        <h2>🐍 Snake Game</h2>
+        <p>Eat food, grow your snake and make a high score!</p>
+        <button onclick="startGame()">PLAY NOW</button>
+    </div>
+
+    <div id="gameArea">
+
+        <h2>🐍 Snake Game</h2>
+
+        <div class="score">
+            Score: <span id="score">0</span>
+        </div>
+
+        <canvas
+            id="game"
+            width="320"
+            height="320">
+        </canvas>
+
+        <div class="controls">
+            <div>
+                <button onclick="changeDirection('UP')">⬆️</button>
+            </div>
+
+            <div>
+                <button onclick="changeDirection('LEFT')">⬅️</button>
+                <button onclick="changeDirection('DOWN')">⬇️</button>
+                <button onclick="changeDirection('RIGHT')">➡️</button>
+            </div>
+        </div>
+
+        <button onclick="restartGame()">RESTART</button>
+        <button onclick="backHome()">HOME</button>
+
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 JR GAMES | All Rights Reserved</p>
+</footer>
+
+<script>
+
+let canvas = document.getElementById("game");
+let ctx = canvas.getContext("2d");
+
+let snake;
+let food;
+let direction;
+let score;
+let gameLoop;
+let running = false;
+
+const size = 16;
+
+function startGame() {
+    document.getElementById("snakeCard").style.display = "none";
+    document.getElementById("gameArea").style.display = "block";
+    restartGame();
+}
+
+function restartGame() {
+    clearInterval(gameLoop);
+
+    snake = [
+        {x: 160, y: 160},
+        {x: 144, y: 160},
+        {x: 128, y: 160}
+    ];
+
+    direction = "RIGHT";
+    score = 0;
+
+    document.getElementById("score").innerText = score;
+
+    createFood();
+
+    running = true;
+
+    gameLoop = setInterval(drawGame, 120);
+}
+
+function createFood() {
+    food = {
+        x: Math.floor(Math.random() * 20) * size,
+        y: Math.floor(Math.random() * 20) * size
+    };
+}
+
+function drawGame() {
+
+    if (!running) return;
+
+    ctx.fillStyle = "#050a12";
+    ctx.fillRect(0, 0, 320, 320);
+
+    ctx.fillStyle = "#ff3355";
+    ctx.fillRect(food.x, food.y, size, size);
+
+    let head = {...snake[0]};
+
+    if (direction === "UP") head.y -= size;
+    if (direction === "DOWN") head.y += size;
+    if (direction === "LEFT") head.x -= size;
+    if (direction === "RIGHT") head.x += size;
+
+    let eating = head.x === food.x && head.y === food.y;
+
+    if (
+        head.x < 0 ||
+        head.y < 0 ||
+        head.x >= 320 ||
+        head.y >= 320 ||
+        snake.some((part, index) =>
+            (eating || index < snake.length - 1) &&
+            part.x === head.x &&
+            part.y === head.y
+        )
+    ) {
+        endGame();
+        return;
+    }
+
+    snake.unshift(head);
+
+    if (eating) {
+        score += 10;
+        document.getElementById("score").innerText = score;
+        createFood();
+    } else {
+        snake.pop();
+    }
+
+    snake.forEach((part, index) => {
+        ctx.fillStyle = index === 0 ? "#00ff99" : "#00d9ff";
+        ctx.fillRect(part.x, part.y, size - 2, size - 2);
+    });
+}
+
+function changeDirection(newDirection) {
+
+    if (newDirection === "UP" && direction !== "DOWN")
+        direction = "UP";
+
+    if (newDirection === "DOWN" && direction !== "UP")
+        direction = "DOWN";
+
+    if (newDirection === "LEFT" && direction !== "RIGHT")
+        direction = "LEFT";
+
+    if (newDirection === "RIGHT" && direction !== "LEFT")
+        direction = "RIGHT";
+}
+
+function endGame() {
+    running = false;
+    clearInterval(gameLoop);
+
+    alert("GAME OVER! Your Score: " + score);
+}
+
+function backHome() {
+    clearInterval(gameLoop);
+    running = false;
+
+    document.getElementById("gameArea").style.display = "none";
+    document.getElementById("snakeCard").style.display = "block";
+}
+
+function searchGame() {
+    let value = document.getElementById("search").value.toLowerCase();
+
     document.getElementById("snakeCard").style.display =
         
