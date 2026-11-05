@@ -4,7 +4,186 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JR GAMES</title>
-<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#080812;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse at top left,#25104b 0%,transparent 40%),
+    radial-gradient(ellipse at bottom right,#082d45 0%,transparent 40%);
+}
+
+/* GAMING HEADER */
+header{
+  text-align:center;
+  padding:35px 15px;
+  background:linear-gradient(135deg,#15102e,#091c35);
+  border-bottom:2px solid #00eaff;
+  box-shadow:0 5px 30px #00eaff22;
+}
+
+header h1{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:3px;
+  color:#00eaff;
+  text-shadow:0 0 10px #00eaff,0 0 25px #008cff;
+}
+
+header p{
+  margin:12px;
+  color:#bbb;
+}
+
+header h3{
+  color:#ff39d7;
+  margin-top:15px;
+}
+
+/* NAVIGATION */
+nav{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:20px 10px;
+}
+
+button{
+  background:linear-gradient(135deg,#00eaff,#007bff);
+  color:#050817;
+  border:0;
+  border-radius:9px;
+  padding:12px 18px;
+  font-weight:bold;
+  transition:.3s;
+}
+
+button:hover{
+  transform:scale(1.07);
+  box-shadow:0 0 18px #00eaff;
+}
+
+/* SEARCH */
+.search{
+  text-align:center;
+  padding:20px;
+}
+
+input{
+  background:#15152b;
+  color:white;
+  border:2px solid #793cff;
+  border-radius:30px;
+  padding:15px 22px;
+  width:90%;
+  max-width:550px;
+  outline:none;
+}
+
+input:focus{
+  border-color:#00eaff;
+  box-shadow:0 0 15px #00eaff;
+}
+
+/* GAME GRID */
+#games{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:18px;
+  padding:20px;
+  max-width:1300px;
+  margin:auto;
+}
+
+/* GAME CARD */
+.game{
+  background:linear-gradient(145deg,#191932,#101024);
+  border:1px solid #34345e;
+  border-radius:17px;
+  padding:20px 10px;
+  text-align:center;
+  box-shadow:0 5px 18px #0008;
+  transition:.3s;
+}
+
+.game:hover{
+  transform:translateY(-8px);
+  border-color:#00eaff;
+  box-shadow:0 0 22px #00eaff55;
+}
+
+.game .emoji{
+  font-size:45px;
+  margin-bottom:12px;
+  filter:drop-shadow(0 0 8px #00eaff);
+}
+
+.game h3{
+  font-size:15px;
+  margin:12px 0;
+  color:#fff;
+}
+
+.game button{
+  margin-top:8px;
+  width:90%;
+}
+
+/* PLAY SCREEN */
+#playArea{
+  background:#080812;
+  padding:25px 15px;
+}
+
+#playArea h2{
+  color:#00eaff;
+  text-shadow:0 0 12px #00eaff;
+  margin:25px 0;
+}
+
+#gameBox{
+  background:linear-gradient(145deg,#191932,#101024);
+  border:1px solid #444477;
+  border-radius:22px;
+  padding:25px 15px;
+  max-width:650px;
+  margin:25px auto;
+  box-shadow:0 0 30px #792cff22;
+}
+
+/* FOOTER */
+footer{
+  margin-top:50px;
+  text-align:center;
+  padding:30px;
+  background:#101024;
+  border-top:2px solid #793cff;
+}
+
+footer h2{
+  color:#00eaff;
+  text-shadow:0 0 10px #00eaff;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  header h1{font-size:32px}
+  #games{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    padding:12px;
+  }
+  .game{padding:15px 6px}
+  nav button{padding:10px 12px;font-size:12px}
+}
 *{box-sizing:border-box}
 body{margin:0;background:#090d18;color:white;font-family:Arial,sans-serif}
 header{background:#111a30;padding:22px;text-align:center;border-bottom:2px solid #00eaff}
