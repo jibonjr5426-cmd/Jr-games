@@ -2,237 +2,660 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>JR Dhaka Rickshaw - Premium</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#101b2d">
+<title>JR Dhaka Rickshaw 3D</title>
 
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#080d18;color:white;
- font-family:Arial,sans-serif;
- display:flex;justify-content:center;overflow:hidden
+body{margin:0;overflow:hidden;background:#87ceeb;font-family:Arial;color:white}
+#game{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
+#hud{position:absolute;top:10px;left:8px;right:8px;display:flex;justify-content:space-between;gap:4px;z-index:5}
+.stat{background:#061426dd;border:1px solid #ffffff33;border-radius:10px;padding:8px 5px;text-align:center;flex:1}
+.stat b{color:#ffd700;font-size:14px}
+.stat small{display:block;font-size:9px;color:#ddd;margin-top:3px}
+#fuelPanel{position:absolute;top:70px;left:12px;right:12px;background:#061426dd;border-radius:9px;padding:7px;z-index:5;font-size:11px}
+#fuelBar{height:8px;background:#333;border-radius:8px;overflow:hidden;margin-top:4px}
+#fuelFill{height:100%;width:100%;background:#00e676}
+#controls{position:absolute;bottom:18px;left:15px;right:15px;display:flex;justify-content:space-between;z-index:6;pointer-events:none}
+.controlGroup{display:flex;gap:12px;pointer-events:auto}
+.control{
+ width:64px;height:58px;border:1px solid #ffffff55;border-radius:16px;
+ background:#071629dd;color:white;font-size:25px;
+ box-shadow:0 4px 12px #0005;touch-action:none
 }
-.app{
- width:100%;max-width:440px;height:100dvh;
- background:linear-gradient(#55b9e8,#f7d68c);
- display:flex;flex-direction:column;padding:10px;
- position:relative;overflow:hidden
+.control:active{background:#ffc400;color:#111}
+#soundControls{position:absolute;bottom:90px;right:12px;display:flex;gap:6px;z-index:6}
+.soundBtn{border:0;border-radius:10px;padding:9px;background:#071629dd;color:white;font-size:11px}
+#message{position:absolute;top:38%;width:100%;text-align:center;font-size:25px;font-weight:bold;text-shadow:0 3px 5px black;display:none;z-index:8}
+.screen{
+ position:absolute;inset:0;z-index:10;background:#071323ed;
+ display:flex;align-items:center;justify-content:center;
+ flex-direction:column;text-align:center;padding:18px;overflow:auto
 }
-.top{
- display:flex;justify-content:space-between;
- background:#07101ddd;padding:9px 6px;
- border-radius:14px;z-index:5;
- box-shadow:0 4px 12px #0005
-}
-.top div{text-align:center}
-.top b{font-size:16px;color:#ffd700}
-.top span{display:block;font-size:10px;color:#ddd;margin-top:3px}
-#road{
- flex:1;position:relative;overflow:hidden;
- background:linear-gradient(90deg,#444,#555 50%,#444);
- border:4px solid white;border-radius:15px;
- margin:10px 0;perspective:400px
-}
-.city{
- position:absolute;top:0;width:100%;height:25%;
- background:linear-gradient(#65bce9,#b4e2ee);
- display:flex;align-items:flex-end;justify-content:space-around
-}
-.building{
- width:15%;height:65%;background:#db9b53;
- border:2px solid #704a35;
- box-shadow:inset 0 0 0 3px #ffffff22;
-}
-.building:nth-child(2){height:90%;background:#d7c08c}
-.building:nth-child(3){height:75%;background:#a95d42}
-.building:nth-child(4){height:95%;background:#c9a36e}
-.building:nth-child(5){height:60%;background:#8eaa80}
-.window{
- width:100%;height:100%;
- background:repeating-linear-gradient(90deg,transparent 0 8px,#ffe69a 9px 13px,transparent 14px 22px);
-}
-.roadSurface{
- position:absolute;top:20%;bottom:0;width:100%;
- background:linear-gradient(90deg,#353535,#555,#353535);
-}
-.lane{
- position:absolute;top:0;bottom:0;width:4px;
- background:repeating-linear-gradient(to bottom,#ffe54a 0 35px,transparent 35px 70px);
- opacity:.8
-}
-.l1{left:33%}.l2{left:66%}
-.sidewalk{
- position:absolute;top:20%;bottom:0;width:5%;
- background:repeating-linear-gradient(to bottom,#aaa 0 30px,#777 30px 60px);
-}
-.leftSide{left:0}.rightSide{right:0}
-#rickshaw{
- position:absolute;bottom:13px;left:45%;
- font-size:59px;z-index:6;
- transform:scaleX(-1);
- filter:drop-shadow(0 8px 4px #0009);
- transition:left .10s,transform .15s;
- animation:ride .35s infinite alternate
-}
-@keyframes ride{
- from{translate:0 0}
- to{translate:0 -3px}
-}
-.vehicle,.passenger,.coin{
- position:absolute;z-index:4;
- filter:drop-shadow(0 4px 3px #0008)
-}
-.vehicle{font-size:43px}
-.passenger{font-size:35px;animation:glow .7s infinite alternate}
-.coin{font-size:28px;animation:spin 1s infinite alternate}
-@keyframes glow{to{transform:scale(1.2);filter:drop-shadow(0 0 8px gold)}}
-@keyframes spin{to{transform:rotateY(180deg) scale(1.15)}}
-#msg{
- position:absolute;top:35%;left:50%;
- transform:translate(-50%,-50%);
- font-weight:bold;font-size:23px;
- text-shadow:0 3px 5px black;
- display:none;z-index:12;white-space:nowrap
-}
-.panel{
- background:#06101bdc;padding:8px 12px;
- border-radius:12px;font-size:12px;
-}
-#fuelBar{height:10px;background:#333;border-radius:10px;overflow:hidden;margin-top:5px}
-#fuelFill{height:100%;width:100%;background:linear-gradient(90deg,#00ed60,#ffe000)}
-.controls{display:flex;gap:9px;margin-top:9px}
-.controls button{
- flex:1;padding:15px 0;border:0;border-radius:14px;
- background:linear-gradient(#26374e,#101a2a);
- color:white;font-size:25px;
- box-shadow:0 4px 0 #0007
-}
-.controls button:active{transform:translateY(3px);background:#ffc400;color:black}
-.soundControls{display:flex;gap:8px;margin-top:7px}
-.soundControls button{
- flex:1;padding:9px;border:0;border-radius:10px;
- background:#091527;color:white;font-weight:bold
-}
-#startScreen{
- position:absolute;inset:0;z-index:20;
- background:#030814eF;display:flex;
- flex-direction:column;align-items:center;
- justify-content:center;text-align:center;padding:20px
-}
-#startScreen h1{color:#ffd700;font-size:29px}
-#startScreen p{line-height:1.8;color:#ddd}
+.screen h1{color:#ffd700;font-size:27px;margin:8px}
+.screen p{line-height:1.8;color:#ddd;font-size:14px}
 .btn{
- padding:13px 28px;border:0;border-radius:25px;
- background:linear-gradient(90deg,#ffe000,#ff8c00);
- font-size:17px;font-weight:bold;margin:7px
+ border:0;border-radius:25px;padding:13px 25px;margin:6px;
+ font-size:16px;font-weight:bold;
+ background:linear-gradient(90deg,#ffe000,#ff9100);color:#111
 }
-.btn2{background:white}
-.small{font-size:11px;color:#101828;text-align:center;font-weight:bold}
+.white{background:white}
+#garage{display:none;justify-content:flex-start}
+#garageContent{width:100%;max-width:420px}
+.card{background:#172a42;border:1px solid #ffffff22;border-radius:13px;padding:12px;margin:8px 0;text-align:left}
+.card h3{color:#ffd700;margin:4px 0}
+.card button{padding:9px 13px;border:0;border-radius:8px;background:#ffd000;font-weight:bold;margin-top:8px}
+.card button:disabled{background:#555;color:#ddd}
+.bank{font-size:20px;color:#ffd700;background:#10243a;padding:10px;border-radius:10px;width:100%}
+#loading{position:absolute;inset:0;z-index:30;background:#091527;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
 </style>
 </head>
 
 <body>
-<div class="app">
 
-<div class="top">
- <div><b id="money">৳ 0</b><span>Taka</span></div>
- <div><b id="pass">0</b><span>Passenger</span></div>
- <div><b id="dist">0m</b><span>Distance</span></div>
- <div><b id="best">৳ 0</b><span>Best</span></div>
+<div id="game"></div>
+
+<div id="loading">
+ <h1 style="color:#ffd700">🛺 JR GAMES</h1>
+ <h3>Loading 3D World...</h3>
+ <p>Preparing Dhaka City</p>
 </div>
 
-<div id="road">
-
- <div class="city">
-  <div class="building"><div class="window"></div></div>
-  <div class="building"><div class="window"></div></div>
-  <div class="building"><div class="window"></div></div>
-  <div class="building"><div class="window"></div></div>
-  <div class="building"><div class="window"></div></div>
- </div>
-
- <div class="roadSurface">
-  <div class="lane l1"></div>
-  <div class="lane l2"></div>
-  <div class="sidewalk leftSide"></div>
-  <div class="sidewalk rightSide"></div>
- </div>
-
- <div id="rickshaw">🛺</div>
- <div id="msg"></div>
-
- <div id="startScreen">
-  <h1>🛺 JR DHAKA RICKSHAW</h1>
-  <p>
-   🔥 PREMIUM EDITION<br>
-   🛺 Beautiful Rickshaw Animation<br>
-   🏙️ Dhaka City Environment<br>
-   🔔 Realistic Sound Effects<br><br>
-   👨 Passenger = ৳50<br>
-   🪙 Coin = ৳10<br>
-   🚗 Accident = Game Over!
-  </p>
-  <h3 style="color:#ffd700">Best: <span id="best2">৳0</span></h3>
-  <button class="btn" onclick="startGame()">▶ PLAY GAME</button>
-  <button class="btn btn2" onclick="showHow()">❓ HOW TO PLAY</button>
- </div>
-
+<div id="hud">
+ <div class="stat"><b id="money">৳0</b><small>RUN MONEY</small></div>
+ <div class="stat"><b id="pass">0</b><small>PASSENGER</small></div>
+ <div class="stat"><b id="dist">0m</b><small>DISTANCE</small></div>
+ <div class="stat"><b id="best">৳0</b><small>BEST</small></div>
 </div>
 
-<div class="panel">
- ⛽ Fuel: <span id="fuelText">100%</span>
+<div id="fuelPanel">
+ ⛽ FUEL: <span id="fuelText">100%</span>
  <div id="fuelBar"><div id="fuelFill"></div></div>
 </div>
 
-<div class="controls">
- <button onclick="moveLeft()">⬅️</button>
- <button onclick="moveCenter()">🎯</button>
- <button onclick="moveRight()">➡️</button>
+<div id="message"></div>
+
+<div id="soundControls">
+ <button class="soundBtn" onclick="toggleSound()" id="soundBtn">🔊 SOUND</button>
+ <button class="soundBtn" onclick="toggleMusic()" id="musicBtn">🎵 MUSIC OFF</button>
 </div>
 
-<div class="soundControls">
- <button onclick="toggleSound()" id="soundBtn">🔊 SOUND ON</button>
- <button onclick="ringBell()">🔔 RICKSHAW BELL</button>
- <button onclick="toggleMusic()" id="musicBtn">🎵 MUSIC ON</button>
+<div id="controls">
+ <div class="controlGroup">
+  <button class="control" id="left">⬅️</button>
+  <button class="control" id="right">➡️</button>
+ </div>
+ <div class="controlGroup">
+  <button class="control" id="center">🎯</button>
+  <button class="control" onclick="ringBell()">🔔</button>
+ </div>
 </div>
 
-<p class="small">🛺 JR GAMES • DHAKA RICKSHAW PREMIUM</p>
+<div class="screen" id="menu">
+ <h1>🛺 JR DHAKA RICKSHAW</h1>
+ <h2 style="color:#fff">3D PREMIUM EDITION</h2>
+ <p>
+  🏙️ Explore 3D Dhaka City<br>
+  🛺 Drive Your Rickshaw<br>
+  🪙 Collect Coins & Passengers<br>
+  🛠️ Upgrade Your Rickshaw
+ </p>
+ <h3 style="color:#ffd700">🏦 Bank: <span id="menuBank">৳0</span></h3>
+ <button class="btn" onclick="startGame()">▶ START 3D GAME</button>
+ <button class="btn white" onclick="openGarage()">🛠️ GARAGE</button>
+ <button class="btn white" onclick="showHelp()">❓ HOW TO PLAY</button>
 </div>
+
+<div class="screen" id="garage">
+ <h1>🛠️ 3D GARAGE</h1>
+ <div class="bank">🏦 Bank: <span id="garageBank">৳0</span></div>
+ <div id="garageContent"></div>
+ <button class="btn" onclick="closeGarage()">⬅ BACK</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
-let money=0,passCount=0,dist=0,fuel=100;
-let playing=false,rickX=45,speed=4;
-let best=Number(localStorage.getItem("rickshawBest")||0);
-let soundOn=true,musicOn=false;
-let spawnTimer,gameTimer,animationFrame;
-let musicTimer=null;
-let roadOffset=0;
+"use strict";
 
-const $=id=>document.getElementById(id);
-const road=$("road");
+// =============================
+// SAVE SYSTEM
+// =============================
 
-$("best").innerText="৳ "+best;
-$("best2").innerText="৳ "+best;
+const KEY="jr_3d_rickshaw_save";
 
-// AUDIO SYSTEM
-let audioCtx=null;
+const initial={
+ bank:0,best:0,selected:0,owned:[0],
+ upgrades:{speed:0,fuel:0,efficiency:0,handling:0}
+};
 
-function initAudio(){
- if(!audioCtx){
-  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+function loadSave(){
+ try{
+  let s=JSON.parse(localStorage.getItem(KEY));
+  if(!s)return structuredClone(initial);
+  return {
+   ...initial,...s,
+   owned:Array.isArray(s.owned)?s.owned:[0],
+   upgrades:{...initial.upgrades,...s.upgrades}
+  };
+ }catch(e){
+  return JSON.parse(JSON.stringify(initial));
  }
+}
+
+let save=loadSave();
+
+function saveData(){
+ localStorage.setItem(KEY,JSON.stringify(save));
+ updateBank();
+}
+
+// =============================
+// THREE JS WORLD
+// =============================
+
+let scene,camera,renderer;
+let player;
+let worldObjects=[];
+let obstacles=[];
+let collectibles=[];
+let buildings=[];
+let roadLines=[];
+
+let ready=false;
+let playing=false;
+let gameEnded=false;
+
+function createWorld(){
+
+ scene=new THREE.Scene();
+ scene.background=new THREE.Color(0x87ceeb);
+ scene.fog=new THREE.Fog(0x87ceeb,45,150);
+
+ camera=new THREE.PerspectiveCamera(
+  65,window.innerWidth/window.innerHeight,.1,250
+ );
+ camera.position.set(0,7,13);
+ camera.lookAt(0,1,-8);
+
+ renderer=new THREE.WebGLRenderer({
+  antialias:true,alpha:false
+ });
+
+ renderer.setSize(window.innerWidth,window.innerHeight);
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.5));
+ renderer.shadowMap.enabled=true;
+ renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ renderer.outputEncoding=THREE.sRGBEncoding;
+
+ document.getElementById("game").appendChild(renderer.domElement);
+
+ const ambient=new THREE.HemisphereLight(0xffffff,0x596b55,1.7);
+ scene.add(ambient);
+
+ const sun=new THREE.DirectionalLight(0xffffff,1.5);
+ sun.position.set(-15,30,15);
+ sun.castShadow=true;
+ scene.add(sun);
+
+ // Ground
+ const ground=new THREE.Mesh(
+  new THREE.PlaneGeometry(200,250),
+  new THREE.MeshLambertMaterial({color:0x65934c})
+ );
+ ground.rotation.x=-Math.PI/2;
+ ground.position.y=-.12;
+ ground.position.z=-65;
+ scene.add(ground);
+
+ // Road
+ const road=new THREE.Mesh(
+  new THREE.PlaneGeometry(13,220),
+  new THREE.MeshStandardMaterial({color:0x393c40,roughness:1})
+ );
+ road.rotation.x=-Math.PI/2;
+ road.position.set(0,0,-65);
+ scene.add(road);
+
+ // Road borders
+ for(let x of [-6.6,6.6]){
+  let edge=new THREE.Mesh(
+   new THREE.BoxGeometry(.3,.15,220),
+   new THREE.MeshStandardMaterial({color:0xf3d34a})
+  );
+  edge.position.set(x,.08,-65);
+  scene.add(edge);
+ }
+
+ // Lane lines
+ for(let x of [-2.2,2.2]){
+  for(let z=-120;z<20;z+=12){
+   let line=new THREE.Mesh(
+    new THREE.BoxGeometry(.12,.035,5),
+    new THREE.MeshBasicMaterial({color:0xffdf38})
+   );
+   line.position.set(x,.07,z);
+   scene.add(line);
+   roadLines.push(line);
+  }
+ }
+
+ createCity();
+ player=createRickshaw();
+ scene.add(player);
+
+ window.addEventListener("resize",resize);
+ ready=true;
+
+ document.getElementById("loading").style.display="none";
+
+ updateCarLook();
+ animate();
+}
+
+// =============================
+// 3D CITY
+// =============================
+
+function createCity(){
+
+ const colors=[0xd59a60,0xd7bd83,0xb86b50,0x8b9e83,0xc7a46b];
+
+ for(let i=0;i<22;i++){
+  for(let side of [-1,1]){
+
+   let w=4+Math.random()*3;
+   let h=5+Math.random()*15;
+   let d=4+Math.random()*5;
+
+   let group=new THREE.Group();
+
+   let building=new THREE.Mesh(
+    new THREE.BoxGeometry(w,h,d),
+    new THREE.MeshStandardMaterial({
+     color:colors[Math.floor(Math.random()*colors.length)]
+    })
+   );
+   building.position.y=h/2;
+   building.castShadow=true;
+   group.add(building);
+
+   // Windows
+   for(let floor=1;floor<h/2;floor++){
+    for(let col=-1;col<=1;col++){
+     let win=new THREE.Mesh(
+      new THREE.BoxGeometry(.55,.65,.05),
+      new THREE.MeshBasicMaterial({color:0xffe5a4})
+     );
+     win.position.set(col*w/3,floor*2,-d/2-.03);
+     group.add(win);
+    }
+   }
+
+   group.position.set(side*(10+Math.random()*5),0,-i*9-10);
+   scene.add(group);
+   buildings.push(group);
+  }
+ }
+}
+
+// =============================
+// 3D RICKSHAW MODEL
+// =============================
+
+function box(parent,w,h,d,color,x,y,z){
+ let m=new THREE.Mesh(
+  new THREE.BoxGeometry(w,h,d),
+  new THREE.MeshStandardMaterial({color,roughness:.75})
+ );
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ parent.add(m);
+ return m;
+}
+
+function createRickshaw(){
+
+ let g=new THREE.Group();
+
+ const bodyColor=0x16a05b;
+
+ // Main body
+ box(g,1.7,.7,2,bodyColor,0,.9,0);
+ box(g,1.45,.35,1.3,0x222222,0,1.4,.2);
+
+ // Seats
+ box(g,1.35,.25,.8,0x922f22,0,1.25,-.2);
+
+ // Roof supports
+ for(let x of [-.72,.72]){
+  for(let z of [-.65,.65]){
+   let pole=new THREE.Mesh(
+    new THREE.CylinderGeometry(.045,.045,1.8,8),
+    new THREE.MeshStandardMaterial({color:0xffcf40})
+   );
+   pole.position.set(x,2,z);
+   g.add(pole);
+  }
+ }
+
+ // Roof
+ box(g,1.95,.18,1.9,0xe33a32,0,2.9,0);
+ box(g,1.7,.06,1.6,0xffd438,0,3.02,0);
+
+ // Front glass
+ box(g,1.2,.8,.08,0x70c9ef,0,1.9,.85);
+
+ // Driver head
+ let head=new THREE.Mesh(
+  new THREE.SphereGeometry(.24,12,12),
+  new THREE.MeshStandardMaterial({color:0xc98960})
+ );
+ head.position.set(0,2,-.55);
+ g.add(head);
+
+ // Wheels
+ for(let x of [-.92,.92]){
+  for(let z of [-.65,.65]){
+   let wheel=new THREE.Mesh(
+    new THREE.CylinderGeometry(.36,.36,.17,20),
+    new THREE.MeshStandardMaterial({color:0x171717,roughness:1})
+   );
+   wheel.rotation.z=Math.PI/2;
+   wheel.position.set(x,.43,z);
+   wheel.castShadow=true;
+   g.add(wheel);
+
+   let hub=new THREE.Mesh(
+    new THREE.CylinderGeometry(.15,.15,.19,12),
+    new THREE.MeshStandardMaterial({color:0xffd000,metalness:.5})
+   );
+   hub.rotation.z=Math.PI/2;
+   hub.position.copy(wheel.position);
+   g.add(hub);
+  }
+ }
+
+ // Front lamp
+ let lamp=new THREE.Mesh(
+  new THREE.SphereGeometry(.15,12,12),
+  new THREE.MeshBasicMaterial({color:0xfff1a0})
+ );
+ lamp.position.set(0,1,.98);
+ g.add(lamp);
+
+ g.position.set(0,0,3);
+ return g;
+}
+
+function updateCarLook(){
+ if(!player)return;
+
+ const car=[
+  0x16a05b,0xe33a32,0x187bd1,0xd5a000,0x8b42c9
+ ][save.selected]||0x16a05b;
+
+ player.children.forEach(child=>{
+  if(child.geometry && child.geometry.type==="BoxGeometry" &&
+     child.position.y===.9){
+   child.material.color.setHex(car);
+  }
+ });
+}
+
+// =============================
+// 3D TRAFFIC CARS
+// =============================
+
+function createTrafficCar(){
+
+ let g=new THREE.Group();
+
+ let colors=[0xd92e2e,0x2079d5,0xe7d344,0xffffff,0x222222];
+ let color=colors[Math.floor(Math.random()*colors.length)];
+
+ box(g,1.6,.7,2.8,color,0,.85,0);
+ box(g,1.35,.65,1.4,0x9ed9ed,0,1.45,-.15);
+
+ // Wheels
+ for(let x of [-.85,.85]){
+  for(let z of [-.85,.85]){
+   let wheel=new THREE.Mesh(
+    new THREE.CylinderGeometry(.32,.32,.15,12),
+    new THREE.MeshStandardMaterial({color:0x111111})
+   );
+   wheel.rotation.z=Math.PI/2;
+   wheel.position.set(x,.38,z);
+   g.add(wheel);
+  }
+ }
+
+ // Headlights
+ for(let x of [-.5,.5]){
+  let light=new THREE.Mesh(
+   new THREE.BoxGeometry(.25,.18,.06),
+   new THREE.MeshBasicMaterial({color:0xffffbb})
+  );
+  light.position.set(x,.9,1.43);
+  g.add(light);
+ }
+
+ return g;
+}
+
+// =============================
+// 3D PASSENGER
+// =============================
+
+function createPassenger(){
+
+ let g=new THREE.Group();
+
+ let body=new THREE.Mesh(
+  new THREE.CylinderGeometry(.22,.3,.8,8),
+  new THREE.MeshStandardMaterial({color:0x2876df})
+ );
+ body.position.y=.65;
+ g.add(body);
+
+ let head=new THREE.Mesh(
+  new THREE.SphereGeometry(.22,12,12),
+  new THREE.MeshStandardMaterial({color:0xd49a70})
+ );
+ head.position.y=1.2;
+ g.add(head);
+
+ return g;
+}
+
+// =============================
+// 3D COIN
+// =============================
+
+function createCoin(){
+ let g=new THREE.Group();
+
+ let coin=new THREE.Mesh(
+  new THREE.CylinderGeometry(.4,.4,.12,24),
+  new THREE.MeshStandardMaterial({
+   color:0xffd700,metalness:.8,roughness:.2
+  })
+ );
+ coin.rotation.x=Math.PI/2;
+ g.add(coin);
+
+ return g;
+}
+
+// =============================
+// GARAGE
+// =============================
+
+const cars=[
+ {name:"Classic Rickshaw",price:0,speed:1,emoji:"🛺"},
+ {name:"Red Champion",price:300,speed:1.12,emoji:"🛺"},
+ {name:"Blue Express",price:700,speed:1.22,emoji:"🛺"},
+ {name:"Golden King",price:1500,speed:1.35,emoji:"🛺"},
+ {name:"Neon Beast",price:3000,speed:1.5,emoji:"🏎️"}
+];
+
+const upgrades=[
+ {id:"speed",name:"⚡ Engine Power",base:250,max:5},
+ {id:"fuel",name:"⛽ Fuel Tank",base:200,max:5},
+ {id:"efficiency",name:"💧 Fuel Efficiency",base:300,max:5},
+ {id:"handling",name:"🎮 Easy Handling",base:200,max:5}
+];
+
+function cost(u,level){return u.base*(level+1)}
+
+function updateBank(){
+ document.getElementById("menuBank").innerText="৳"+save.bank;
+ document.getElementById("garageBank").innerText="৳"+save.bank;
+ document.getElementById("best").innerText="৳"+save.best;
+}
+
+function openGarage(){
+ if(playing)return;
+ document.getElementById("menu").style.display="none";
+ document.getElementById("garage").style.display="flex";
+ renderGarage();
+}
+
+function closeGarage(){
+ document.getElementById("garage").style.display="none";
+ document.getElementById("menu").style.display="flex";
+}
+
+function renderGarage(){
+ updateBank();
+
+ let html="<h3 style='color:#ffd700'>🛺 RICKSHAW MODELS</h3>";
+
+ cars.forEach((c,i)=>{
+  let owned=save.owned.includes(i);
+  let selected=save.selected===i;
+
+  html+=`
+  <div class="card">
+   <h3>${c.emoji} ${c.name}</h3>
+   <p>⚡ Speed: ${Math.round(c.speed*100)}%</p>
+   <button onclick="carAction(${i})" ${selected?"disabled":""}>
+   ${selected?"✓ SELECTED":owned?"SELECT":"BUY ৳"+c.price}
+   </button>
+  </div>`;
+ });
+
+ html+="<h3 style='color:#ffd700'>⚡ PERFORMANCE UPGRADES</h3>";
+
+ upgrades.forEach(u=>{
+  let level=save.upgrades[u.id]||0;
+  let price=cost(u,level);
+
+  html+=`
+  <div class="card">
+   <h3>${u.name}</h3>
+   <p>Level: ${level}/${u.max}</p>
+   <button onclick="buyUpgrade('${u.id}')" ${level>=u.max?"disabled":""}>
+   ${level>=u.max?"MAX LEVEL":"UPGRADE ৳"+price}
+   </button>
+  </div>`;
+ });
+
+ document.getElementById("garageContent").innerHTML=html;
+}
+
+function carAction(i){
+ let c=cars[i];
+
+ if(save.owned.includes(i)){
+  save.selected=i;
+  saveData();
+  renderGarage();
+  return;
+ }
+
+ if(save.bank<c.price){
+  alert("টাকা কম! প্রয়োজন ৳"+c.price);
+  return;
+ }
+
+ save.bank-=c.price;
+ save.owned.push(i);
+ save.selected=i;
+
+ saveData();
+ renderGarage();
+ alert(c.name+" কেনা হয়েছে!");
+}
+
+function buyUpgrade(id){
+ let u=upgrades.find(x=>x.id===id);
+ let level=save.upgrades[id]||0;
+
+ if(level>=u.max)return;
+
+ let price=cost(u,level);
+
+ if(save.bank<price){
+  alert("পর্যাপ্ত টাকা নেই!");
+  return;
+ }
+
+ save.bank-=price;
+ save.upgrades[id]=level+1;
+
+ saveData();
+ renderGarage();
+ alert("Upgrade সফল হয়েছে!");
+}
+
+// =============================
+// GAME STATE
+// =============================
+
+let money=0,passCount=0,dist=0,fuel=100;
+let targetX=0;
+let lastTime=0,spawnTime=0,itemTime=0;
+let gameSpeed=18;
+
+function stats(){
+ let c=cars[save.selected];
+ let u=save.upgrades;
+
+ return {
+  speed:c.speed*(1+(u.speed||0)*.12),
+  capacity:100+(u.fuel||0)*20,
+  efficiency:1-(u.efficiency||0)*.12,
+  handling:u.handling||0
+ };
+}
+
+// =============================
+// AUDIO
+// =============================
+
+let audioCtx=null,soundOn=true,musicOn=false,musicTimer=null;
+
+function audio(){
+ if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
  if(audioCtx.state==="suspended")audioCtx.resume();
 }
 
-function tone(freq,duration,type="sine",volume=.15){
+function tone(freq,duration,type="sine",vol=.1){
  if(!soundOn)return;
- initAudio();
- const osc=audioCtx.createOscillator();
- const gain=audioCtx.createGain();
+ audio();
+
+ let osc=audioCtx.createOscillator();
+ let gain=audioCtx.createGain();
+
  osc.type=type;
  osc.frequency.value=freq;
- gain.gain.setValueAtTime(volume,audioCtx.currentTime);
+ gain.gain.setValueAtTime(vol,audioCtx.currentTime);
  gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+
  osc.connect(gain);
  gain.connect(audioCtx.destination);
  osc.start();
@@ -240,40 +663,33 @@ function tone(freq,duration,type="sine",volume=.15){
 }
 
 function ringBell(){
- tone(1100,.15,"sine",.2);
- setTimeout(()=>tone(1500,.2,"sine",.15),100);
-}
-
-function coinSound(){
- tone(900,.12);
- setTimeout(()=>tone(1300,.2),100);
-}
-
-function passengerSound(){
- tone(500,.15);
- setTimeout(()=>tone(700,.2),130);
-}
-
-function crashSound(){
- tone(120,.5,"sawtooth",.3);
+ tone(1100,.15);
+ setTimeout(()=>tone(1500,.2),100);
 }
 
 function toggleSound(){
  soundOn=!soundOn;
- $("soundBtn").innerText=soundOn?"🔊 SOUND ON":"🔇 SOUND OFF";
+ document.getElementById("soundBtn").innerText=soundOn?"🔊 SOUND":"🔇 MUTED";
  if(soundOn)ringBell();
 }
 
+function toggleMusic(){
+ musicOn=!musicOn;
+ document.getElementById("musicBtn").innerText=musicOn?"🎵 MUSIC ON":"🎵 MUSIC OFF";
+
+ if(musicOn){
+  audio();
+  startMusic();
+ }else stopMusic();
+}
+
 function startMusic(){
- if(musicTimer||!musicOn)return;
- let notes=[261,329,392,329,293,349,440,349];
- let i=0;
+ if(musicTimer)return;
+ let notes=[261,329,392,329,293,349,440,349],i=0;
+
  musicTimer=setInterval(()=>{
-  if(playing&&musicOn){
-   tone(notes[i%notes.length],.28,"triangle",.035);
-   i++;
-  }
- },400);
+  if(playing&&musicOn)tone(notes[i++%notes.length],.3,"triangle",.035);
+ },450);
 }
 
 function stopMusic(){
@@ -281,262 +697,314 @@ function stopMusic(){
  musicTimer=null;
 }
 
-function toggleMusic(){
- musicOn=!musicOn;
- $("musicBtn").innerText=musicOn?"🎵 MUSIC ON":"🎵 MUSIC OFF";
- if(musicOn){initAudio();startMusic()}
- else stopMusic();
+// =============================
+// SPAWNING
+// =============================
+
+function spawnTraffic(){
+ let car=createTrafficCar();
+ let lanes=[-4,0,4];
+ car.position.set(lanes[Math.floor(Math.random()*3)],0,-85);
+ scene.add(car);
+ obstacles.push(car);
 }
 
-// PLAYER
-function updateRick(){
- $("rickshaw").style.left=rickX+"%";
-}
-function moveLeft(){
- if(playing){rickX=Math.max(7,rickX-12);updateRick()}
-}
-function moveRight(){
- if(playing){rickX=Math.min(81,rickX+12);updateRick()}
-}
-function moveCenter(){
- if(playing){rickX=45;updateRick()}
+function spawnItem(){
+ let pass=Math.random()<.5;
+ let item=pass?createPassenger():createCoin();
+
+ let lanes=[-4,0,4];
+ item.position.set(lanes[Math.floor(Math.random()*3)],0,-85);
+ item.userData.type=pass?"pass":"coin";
+
+ scene.add(item);
+ collectibles.push(item);
 }
 
-// TOUCH CONTROL
-let dragging=false;
+// =============================
+// START GAME
+// =============================
 
-road.addEventListener("pointerdown",e=>{
- if(!playing)return;
- dragging=true;
- road.setPointerCapture(e.pointerId);
- moveToPointer(e);
-});
-road.addEventListener("pointermove",e=>{
- if(dragging&&playing)moveToPointer(e);
-});
-road.addEventListener("pointerup",()=>dragging=false);
-road.addEventListener("pointercancel",()=>dragging=false);
-
-function moveToPointer(e){
- let rect=road.getBoundingClientRect();
- rickX=Math.max(7,Math.min(81,(e.clientX-rect.left)/rect.width*100-8));
- updateRick();
-}
-
-// KEYBOARD
-document.addEventListener("keydown",e=>{
- if(e.key==="ArrowLeft"||e.key==="a")moveLeft();
- if(e.key==="ArrowRight"||e.key==="d")moveRight();
-});
-
-// START
 function startGame(){
- initAudio();
- money=0;passCount=0;dist=0;fuel=100;
- speed=4;rickX=45;playing=true;
- updateRick();
+ if(!ready||playing)return;
 
- $("money").innerText="৳ 0";
- $("pass").innerText="0";
- $("dist").innerText="0m";
- $("fuelText").innerText="100%";
- $("fuelFill").style.width="100%";
- $("startScreen").style.display="none";
- $("msg").style.display="none";
+ audio();
 
- clearInterval(spawnTimer);
- clearInterval(gameTimer);
- cancelAnimationFrame(animationFrame);
+ playing=true;
+ gameEnded=false;
 
- document.querySelectorAll(".vehicle,.passenger,.coin").forEach(e=>e.remove());
+ money=0;
+ passCount=0;
+ dist=0;
+ targetX=0;
 
- spawnTimer=setInterval(()=>{
-  if(playing)spawnVehicle();
- },850);
+ let s=stats();
+ fuel=s.capacity;
+ gameSpeed=18*s.speed;
 
- setIntervalPassenger();
+ lastTime=0;
+ spawnTime=0;
+ itemTime=0;
 
- gameTimer=setInterval(()=>{
-  if(!playing)return;
+ obstacles.forEach(o=>scene.remove(o));
+ collectibles.forEach(o=>scene.remove(o));
 
-  dist+=2;
-  fuel-=.22;
+ obstacles=[];
+ collectibles=[];
 
-  $("dist").innerText=dist+"m";
-  $("fuelText").innerText=Math.max(0,Math.floor(fuel))+"%";
-  $("fuelFill").style.width=Math.max(0,fuel)+"%";
+ player.position.set(0,0,3);
 
-  if(dist>500)speed=5;
-  if(dist>1000)speed=6;
-  if(dist>2000)speed=7;
+ document.getElementById("menu").style.display="none";
+ document.getElementById("garage").style.display="none";
 
-  if(fuel<=0){
-   gameOver("⛽ FUEL FINISHED!");
-   return;
-  }
-  checkCollision();
- },60);
+ updateHUD();
 
- animate();
  if(musicOn)startMusic();
 }
 
-function setIntervalPassenger(){
- clearInterval(passengerInterval);
- passengerInterval=setInterval(()=>{
-  if(playing)spawnPassengerOrCoin();
- },1250);
-}
-let passengerInterval;
+// =============================
+// MAIN GAME LOOP
+// =============================
 
-// SPAWN
-function spawnVehicle(){
- let el=document.createElement("div");
- el.className="vehicle";
- let cars=["🚗","🚚","🚌","🚙","🏍️","🚕"];
- el.innerText=cars[Math.floor(Math.random()*cars.length)];
- el.style.left=(Math.random()*78+9)+"%";
- el.style.top="-60px";
- road.appendChild(el);
-}
+function animate(time=0){
 
-function spawnPassengerOrCoin(){
- let el=document.createElement("div");
- if(Math.random()<.5){
-  el.className="passenger";
-  el.innerText=Math.random()<.5?"🧍‍♂️":"🧍‍♀️";
-  el.dataset.type="pass";
- }else{
-  el.className="coin";
-  el.innerText="🪙";
-  el.dataset.type="coin";
+ requestAnimationFrame(animate);
+
+ if(playing){
+  let dt=lastTime?Math.min((time-lastTime)/1000,.05):.016;
+  lastTime=time;
+
+  let s=stats();
+
+  dist+=dt*gameSpeed;
+  fuel-=dt*1.5*s.efficiency;
+
+  // Difficulty
+  let actualSpeed=gameSpeed+Math.min(dist/100,12);
+
+  // Player steering
+  let smooth=1+ s.handling*.15;
+  player.position.x+=(targetX-player.position.x)*Math.min(1,dt*8*smooth);
+
+  player.rotation.z=-(targetX-player.position.x)*.04;
+
+  // Camera follow
+  camera.position.x+=(player.position.x*.32-camera.position.x)*dt*3;
+  camera.lookAt(player.position.x*.2,1,-7);
+
+  // Road movement
+  roadLines.forEach(line=>{
+   line.position.z+=actualSpeed*dt;
+   if(line.position.z>15)line.position.z-=140;
+  });
+
+  // City movement
+  buildings.forEach(b=>{
+   b.position.z+=actualSpeed*dt*.65;
+   if(b.position.z>15)b.position.z-=198;
+  });
+
+  // Spawning
+  spawnTime+=dt;
+  itemTime+=dt;
+
+  if(spawnTime>Math.max(.55,1.15-dist/1000)){
+   spawnTraffic();
+   spawnTime=0;
+  }
+
+  if(itemTime>1.15){
+   spawnItem();
+   itemTime=0;
+  }
+
+  // Traffic movement
+  obstacles.forEach((o,i)=>{
+   o.position.z+=actualSpeed*dt;
+
+   if(o.position.z>14){
+    scene.remove(o);
+    obstacles.splice(i,1);
+    return;
+   }
+
+   if(Math.abs(o.position.x-player.position.x)<1.5 &&
+      Math.abs(o.position.z-player.position.z)<1.7){
+    endGame("💥 ACCIDENT!");
+   }
+  });
+
+  // Collectibles
+  collectibles.forEach((o,i)=>{
+   o.position.z+=actualSpeed*dt;
+   o.rotation.y+=dt*2;
+
+   if(o.position.z>14){
+    scene.remove(o);
+    collectibles.splice(i,1);
+    return;
+   }
+
+   if(Math.abs(o.position.x-player.position.x)<1.5 &&
+      Math.abs(o.position.z-player.position.z)<1.8){
+
+    if(o.userData.type==="pass"){
+     money+=50;
+     passCount++;
+     showMessage("👨 PASSENGER +৳50");
+     tone(600,.15);
+    }else{
+     money+=10;
+     showMessage("🪙 +৳10");
+     tone(1200,.2);
+    }
+
+    scene.remove(o);
+    collectibles.splice(i,1);
+    updateHUD();
+
+    if(navigator.vibrate)navigator.vibrate(30);
+   }
+  });
+
+  // Fuel
+  if(fuel<=0){
+   endGame("⛽ FUEL FINISHED!");
+  }
+
+  updateHUD();
  }
- el.style.left=(Math.random()*78+9)+"%";
- el.style.top="-50px";
- road.appendChild(el);
+
+ renderer.render(scene,camera);
 }
 
-// ANIMATION
-function animate(){
- if(!playing)return;
+// =============================
+// HUD
+// =============================
 
- roadOffset+=speed;
- document.querySelectorAll(".lane").forEach(l=>{
-  l.style.backgroundPositionY=roadOffset+"px";
- });
- document.querySelectorAll(".vehicle,.passenger,.coin").forEach(el=>{
-  let top=parseFloat(el.style.top||"-50");
-  top+=speed+dist/500;
-  el.style.top=top+"px";
-  if(top>road.clientHeight+50)el.remove();
- });
+function updateHUD(){
+ document.getElementById("money").innerText="৳"+money;
+ document.getElementById("pass").innerText=passCount;
+ document.getElementById("dist").innerText=Math.floor(dist)+"m";
+ document.getElementById("best").innerText="৳"+save.best;
 
- checkCollision();
-
- animationFrame=requestAnimationFrame(animate);
+ let percent=Math.max(0,fuel/stats().capacity*100);
+ document.getElementById("fuelText").innerText=Math.floor(percent)+"%";
+ document.getElementById("fuelFill").style.width=percent+"%";
 }
 
-// COLLISION
-function checkCollision(){
- if(!playing)return;
- let rRect=$("rickshaw").getBoundingClientRect();
-
- document.querySelectorAll(".vehicle,.passenger,.coin").forEach(el=>{
-  let rect=el.getBoundingClientRect();
-  let hit=!(
-   rect.right<rRect.left+12||
-   rect.left>rRect.right-12||
-   rect.bottom<rRect.top+10||
-   rect.top>rRect.bottom-10
-  );
-
-  if(!hit)return;
-
-  if(el.classList.contains("vehicle")){
-   el.remove();
-   gameOver("💥 ACCIDENT!");
-   return;
-  }
-
-  if(el.dataset.type==="pass"){
-   passCount++;
-   money+=50;
-   $("pass").innerText=passCount;
-   showMsg("👋 PASSENGER +৳50");
-   passengerSound();
-   if(navigator.vibrate)navigator.vibrate(40);
-  }else if(el.dataset.type==="coin"){
-   money+=10;
-   showMsg("🪙 +৳10");
-   coinSound();
-  }
-
-  $("money").innerText="৳ "+money;
-  el.remove();
- });
-}
-
-function showMsg(t){
- let m=$("msg");
- m.innerText=t;
- m.style.display="block";
- clearTimeout(msgTimer);
- msgTimer=setTimeout(()=>m.style.display="none",700);
-}
-let msgTimer;
-
+// =============================
 // GAME OVER
-function gameOver(reason){
- if(!playing)return;
- playing=false;
+// =============================
 
- clearInterval(spawnTimer);
- clearInterval(gameTimer);
- clearInterval(passengerInterval);
- cancelAnimationFrame(animationFrame);
+function endGame(reason){
+ if(!playing||gameEnded)return;
+
+ playing=false;
+ gameEnded=true;
 
  stopMusic();
- crashSound();
 
- document.querySelectorAll(".vehicle,.passenger,.coin").forEach(e=>e.remove());
+ save.bank+=money;
+ save.best=Math.max(save.best,money);
+ saveData();
 
- if(money>best){
-  best=money;
-  localStorage.setItem("rickshawBest",best);
+ if(soundOn){
+  tone(100,.5,"sawtooth",.25);
  }
 
- $("best").innerText="৳ "+best;
- $("best2").innerText="৳ "+best;
-
- $("startScreen").innerHTML=`
- <h1>GAME OVER 😢</h1>
- <h2 style="color:#ffd700">${reason}</h2>
- <p style="font-size:19px">
- 💰 Taka: <b style="color:#ffd700">৳ ${money}</b><br>
- 👨 Passenger: ${passCount}<br>
- 🛣️ Distance: ${dist}m<br>
- 🏆 Best: ৳ ${best}
- </p>
- <button class="btn" onclick="startGame()">🔄 PLAY AGAIN</button>
+ document.getElementById("menu").innerHTML=`
+  <h1>GAME OVER 😢</h1>
+  <h2 style="color:#ffd700">${reason}</h2>
+  <p>
+   💰 Run Earnings: ৳${money}<br>
+   👨 Passenger: ${passCount}<br>
+   🛣️ Distance: ${Math.floor(dist)}m<br>
+   🏦 Total Bank: ৳${save.bank}<br>
+   🏆 Best: ৳${save.best}
+  </p>
+  <button class="btn" onclick="startGame()">🔄 PLAY AGAIN</button>
+  <button class="btn white" onclick="openGarage()">🛠️ GARAGE</button>
+  <button class="btn white" onclick="mainMenu()">🏠 MAIN MENU</button>
  `;
- $("startScreen").style.display="flex";
 
- if(navigator.vibrate)navigator.vibrate([100,50,150]);
+ document.getElementById("menu").style.display="flex";
 }
 
-function showHow(){
- alert(
- "🛺 HOW TO PLAY\n\n"+
- "⬅️➡️ Button diye Rickshaw chalাও\n"+
- "👆 Screen-e finger diye Rickshaw sorাও\n"+
- "👨 Passenger = ৳50\n"+
- "🪙 Coin = ৳10\n"+
- "🚗 Gari lagle Game Over\n"+
- "⛽ Fuel sesh hole Game Over\n"+
- "🔔 Bell button diye ghonta bajাও\n"+
- "🎵 Music ON/OFF korte paro"
- );
+function mainMenu(){
+ document.getElementById("menu").innerHTML=`
+  <h1>🛺 JR DHAKA RICKSHAW</h1>
+  <h2>3D PREMIUM EDITION</h2>
+  <p>🏙️ Explore Dhaka City<br>🪙 Collect Coins<br>🛠️ Upgrade Rickshaw</p>
+  <h3 style="color:#ffd700">🏦 Bank: ৳${save.bank}</h3>
+  <button class="btn" onclick="startGame()">▶ START 3D GAME</button>
+  <button class="btn white" onclick="openGarage()">🛠️ GARAGE</button>
+  <button class="btn white" onclick="showHelp()">❓ HOW TO PLAY</button>
+ `;
+ document.getElementById("menu").style.display="flex";
 }
+
+function showMessage(t){
+ let el=document.getElementById("message");
+ el.innerText=t;
+ el.style.display="block";
+ clearTimeout(window.messageTimer);
+ window.messageTimer=setTimeout(()=>el.style.display="none",700);
+}
+
+function showHelp(){
+ alert("🛺 JR 3D RICKSHAW\n\n⬅️➡️ Steering দিয়ে চালাও\n👨 Passenger = ৳50\n🪙 Coin = ৳10\n🚗 গাড়ি এড়িয়ে চলো\n⛽ Fuel শেষ হলে Game Over\n🛠️ Garage-এ Upgrade করো!");
+}
+
+// =============================
+// CONTROLS
+// =============================
+
+function bindButton(id,action){
+ const b=document.getElementById(id);
+ b.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  action();
+ });
+}
+
+function steer(direction){
+ if(!playing)return;
+ let h=stats().handling;
+ targetX=Math.max(-4,Math.min(4,targetX+direction*(1+h*.08)));
+}
+
+bindButton("left",()=>steer(-1));
+bindButton("right",()=>steer(1));
+bindButton("center",()=>targetX=0);
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")steer(-1);
+ if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")steer(1);
+});
+
+// Drag steering
+let touchStart=null;
+
+rendererReady();
+
+function rendererReady(){
+ try{
+  createWorld();
+  updateBank();
+ }catch(e){
+  document.getElementById("loading").innerHTML=
+  "<h2>3D Loading Error</h2><p>এই ব্রাউজারে WebGL চালু আছে কি না পরীক্ষা করো। ইন্টারনেট সংযোগও পরীক্ষা করো।</p>";
+ }
+}
+
+function resize(){
+ if(!camera||!renderer)return;
+ camera.aspect=window.innerWidth/window.innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(window.innerWidth,window.innerHeight);
+}
+
 </script>
 </body>
- </html>
+                    </html>
