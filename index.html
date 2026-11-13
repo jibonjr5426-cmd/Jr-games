@@ -2,255 +2,540 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080d1c">
-<title>JR GAMES | Premium Gaming</title>
-<meta name="description" content="Play free online games at JR GAMES. Snake, Tic Tac Toe, 2048, Memory and Click Challenge.">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>JR Dhaka Rickshaw - Premium</title>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#080d1c;color:#fff;min-height:100vh}
-header{background:#101a30;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #243657}
-.logo{font-size:27px;font-weight:900;color:#00eaff}
-.logo span{color:#fff}
-nav{display:flex;gap:15px;align-items:center}
-nav a{color:#ddd;text-decoration:none}
-.hero{text-align:center;padding:48px 15px 35px;background:radial-gradient(ellipse at top,#17366b,#080d1c 70%)}
-.hero h1{font-size:clamp(30px,6vw,48px);margin-bottom:12px}
-.hero h1 span{color:#00eaff}
-.hero p{color:#b5c4dc;margin-bottom:22px}
-button{cursor:pointer;border:0;border-radius:9px;padding:11px 17px;font-weight:bold}
-.primary{background:#00d9ff;color:#07111d}
-.primary:hover{background:#00ffad}
-.wrap{max-width:1100px;margin:auto;padding:20px}
-.stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:0 auto 25px}
-.stat{background:#14213a;border:1px solid #29436b;padding:12px 20px;border-radius:12px;text-align:center}
-.stat strong{display:block;color:#00eaff;font-size:22px}
-.search{width:100%;padding:15px;background:#121e34;border:1px solid #345071;color:white;border-radius:10px;font-size:16px;margin-bottom:20px;outline:none}
-h2{margin:15px 0 20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:17px}
-.card{background:linear-gradient(145deg,#182943,#101a2e);border:1px solid #294365;border-radius:15px;padding:20px;transition:.2s}
-.card:hover{transform:translateY(-5px);border-color:#00eaff}
-.thumb{height:100px;display:grid;place-items:center;font-size:60px}
-.card h3{margin:10px 0;color:#00eaff}
-.card p{font-size:13px;color:#b4c2d8;margin-bottom:14px}
-.card button{width:100%}
-#play{display:none;margin-top:30px;background:#111d32;border:1px solid #2b466b;border-radius:16px;padding:20px;text-align:center}
-#play h2{color:#00eaff;margin-bottom:15px}
-.gamearea{max-width:480px;margin:15px auto}
-.gamearea canvas{max-width:100%;background:#050c19;border:2px solid #00d9ff;border-radius:10px;touch-action:none}
-#board{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:310px;margin:15px auto}
-.cell{aspect-ratio:1;background:#20334e;color:#00eaff;font-size:35px;border-radius:9px}
-.memory{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:340px;margin:15px auto}
-.mem{aspect-ratio:1;background:#244266;color:white;font-size:27px;border-radius:8px}
-.mem.open,.mem.matched{background:#087b82}
-#numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:330px;margin:15px auto}
-.tile{aspect-ratio:1;background:#20334e;display:grid;place-items:center;border-radius:8px;font-weight:bold;font-size:22px}
-.tile:not(:empty){color:#fff}
-.score{color:#00ffad;font-size:20px;margin:12px}
-.game-controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:15px}
-.game-controls button{background:#263d5e;color:white}
-.game-controls button.primary{background:#00d9ff;color:#07111d}
-.clickbox{max-width:300px;margin:20px auto;background:#20334e;border-radius:14px;padding:25px}
-#clickBtn{width:100%;height:120px;font-size:26px;background:#00d9ff;color:#07111d}
-.hint{color:#b4c2d8;font-size:13px;margin:10px}
-footer{text-align:center;color:#8999b4;padding:30px 10px;margin-top:30px;border-top:1px solid #263653}
-@media(max-width:500px){header{justify-content:center}nav{width:100%;justify-content:center}.wrap{padding:13px}.card{padding:15px}}
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080d18;color:white;
+ font-family:Arial,sans-serif;
+ display:flex;justify-content:center;overflow:hidden
+}
+.app{
+ width:100%;max-width:440px;height:100dvh;
+ background:linear-gradient(#55b9e8,#f7d68c);
+ display:flex;flex-direction:column;padding:10px;
+ position:relative;overflow:hidden
+}
+.top{
+ display:flex;justify-content:space-between;
+ background:#07101ddd;padding:9px 6px;
+ border-radius:14px;z-index:5;
+ box-shadow:0 4px 12px #0005
+}
+.top div{text-align:center}
+.top b{font-size:16px;color:#ffd700}
+.top span{display:block;font-size:10px;color:#ddd;margin-top:3px}
+#road{
+ flex:1;position:relative;overflow:hidden;
+ background:linear-gradient(90deg,#444,#555 50%,#444);
+ border:4px solid white;border-radius:15px;
+ margin:10px 0;perspective:400px
+}
+.city{
+ position:absolute;top:0;width:100%;height:25%;
+ background:linear-gradient(#65bce9,#b4e2ee);
+ display:flex;align-items:flex-end;justify-content:space-around
+}
+.building{
+ width:15%;height:65%;background:#db9b53;
+ border:2px solid #704a35;
+ box-shadow:inset 0 0 0 3px #ffffff22;
+}
+.building:nth-child(2){height:90%;background:#d7c08c}
+.building:nth-child(3){height:75%;background:#a95d42}
+.building:nth-child(4){height:95%;background:#c9a36e}
+.building:nth-child(5){height:60%;background:#8eaa80}
+.window{
+ width:100%;height:100%;
+ background:repeating-linear-gradient(90deg,transparent 0 8px,#ffe69a 9px 13px,transparent 14px 22px);
+}
+.roadSurface{
+ position:absolute;top:20%;bottom:0;width:100%;
+ background:linear-gradient(90deg,#353535,#555,#353535);
+}
+.lane{
+ position:absolute;top:0;bottom:0;width:4px;
+ background:repeating-linear-gradient(to bottom,#ffe54a 0 35px,transparent 35px 70px);
+ opacity:.8
+}
+.l1{left:33%}.l2{left:66%}
+.sidewalk{
+ position:absolute;top:20%;bottom:0;width:5%;
+ background:repeating-linear-gradient(to bottom,#aaa 0 30px,#777 30px 60px);
+}
+.leftSide{left:0}.rightSide{right:0}
+#rickshaw{
+ position:absolute;bottom:13px;left:45%;
+ font-size:59px;z-index:6;
+ transform:scaleX(-1);
+ filter:drop-shadow(0 8px 4px #0009);
+ transition:left .10s,transform .15s;
+ animation:ride .35s infinite alternate
+}
+@keyframes ride{
+ from{translate:0 0}
+ to{translate:0 -3px}
+}
+.vehicle,.passenger,.coin{
+ position:absolute;z-index:4;
+ filter:drop-shadow(0 4px 3px #0008)
+}
+.vehicle{font-size:43px}
+.passenger{font-size:35px;animation:glow .7s infinite alternate}
+.coin{font-size:28px;animation:spin 1s infinite alternate}
+@keyframes glow{to{transform:scale(1.2);filter:drop-shadow(0 0 8px gold)}}
+@keyframes spin{to{transform:rotateY(180deg) scale(1.15)}}
+#msg{
+ position:absolute;top:35%;left:50%;
+ transform:translate(-50%,-50%);
+ font-weight:bold;font-size:23px;
+ text-shadow:0 3px 5px black;
+ display:none;z-index:12;white-space:nowrap
+}
+.panel{
+ background:#06101bdc;padding:8px 12px;
+ border-radius:12px;font-size:12px;
+}
+#fuelBar{height:10px;background:#333;border-radius:10px;overflow:hidden;margin-top:5px}
+#fuelFill{height:100%;width:100%;background:linear-gradient(90deg,#00ed60,#ffe000)}
+.controls{display:flex;gap:9px;margin-top:9px}
+.controls button{
+ flex:1;padding:15px 0;border:0;border-radius:14px;
+ background:linear-gradient(#26374e,#101a2a);
+ color:white;font-size:25px;
+ box-shadow:0 4px 0 #0007
+}
+.controls button:active{transform:translateY(3px);background:#ffc400;color:black}
+.soundControls{display:flex;gap:8px;margin-top:7px}
+.soundControls button{
+ flex:1;padding:9px;border:0;border-radius:10px;
+ background:#091527;color:white;font-weight:bold
+}
+#startScreen{
+ position:absolute;inset:0;z-index:20;
+ background:#030814eF;display:flex;
+ flex-direction:column;align-items:center;
+ justify-content:center;text-align:center;padding:20px
+}
+#startScreen h1{color:#ffd700;font-size:29px}
+#startScreen p{line-height:1.8;color:#ddd}
+.btn{
+ padding:13px 28px;border:0;border-radius:25px;
+ background:linear-gradient(90deg,#ffe000,#ff8c00);
+ font-size:17px;font-weight:bold;margin:7px
+}
+.btn2{background:white}
+.small{font-size:11px;color:#101828;text-align:center;font-weight:bold}
 </style>
 </head>
+
 <body>
-<header>
- <div class="logo">JR <span>GAMES</span> 🎮</div>
- <nav><a href="#home">Home</a><a href="#games">Games</a><a href="#about">About</a></nav>
-</header>
+<div class="app">
 
-<section class="hero" id="home">
- <h1>PLAY. <span>CREATE.</span> REPEAT.</h1>
- <p>Welcome to JR GAMES — Your Ultimate Gaming Zone!</p>
- <button class="primary" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">Explore Games ↓</button>
-</section>
+<div class="top">
+ <div><b id="money">৳ 0</b><span>Taka</span></div>
+ <div><b id="pass">0</b><span>Passenger</span></div>
+ <div><b id="dist">0m</b><span>Distance</span></div>
+ <div><b id="best">৳ 0</b><span>Best</span></div>
+</div>
 
-<main class="wrap">
- <div class="stats">
-  <div class="stat"><strong id="total">5</strong>Games</div>
-  <div class="stat"><strong id="played">0</strong>Played</div>
-  <div class="stat"><strong>FREE</strong>To Play</div>
+<div id="road">
+
+ <div class="city">
+  <div class="building"><div class="window"></div></div>
+  <div class="building"><div class="window"></div></div>
+  <div class="building"><div class="window"></div></div>
+  <div class="building"><div class="window"></div></div>
+  <div class="building"><div class="window"></div></div>
  </div>
 
- <input class="search" id="search" placeholder="🔍 Search your favorite game..." oninput="filterGames()">
- <h2 id="games">🎮 Featured Games</h2>
- <div class="grid" id="gameGrid">
-  <div class="card" data-name="snake">
-   <div class="thumb">🐍</div><h3>Snake Game</h3>
-   <p>Collect food and grow your snake!</p>
-   <button class="primary" onclick="startGame('snake')">PLAY NOW</button>
-  </div>
-  <div class="card" data-name="tic tac toe">
-   <div class="thumb">⭕</div><h3>Tic Tac Toe</h3>
-   <p>Challenge your friend and win!</p>
-   <button class="primary" onclick="startGame('tic')">PLAY NOW</button>
-  </div>
-  <div class="card" data-name="2048 puzzle">
-   <div class="thumb">🔢</div><h3>2048 Puzzle</h3>
-   <p>Join the numbers to reach 2048!</p>
-   <button class="primary" onclick="startGame('2048')">PLAY NOW</button>
-  </div>
-  <div class="card" data-name="memory match">
-   <div class="thumb">🃏</div><h3>Memory Match</h3>
-   <p>Find matching pairs of cards!</p>
-   <button class="primary" onclick="startGame('memory')">PLAY NOW</button>
-  </div>
-  <div class="card" data-name="click challenge">
-   <div class="thumb">⚡</div><h3>Click Challenge</h3>
-   <p>How many times can you click in 10 seconds?</p>
-   <button class="primary" onclick="startGame('click')">PLAY NOW</button>
-  </div>
+ <div class="roadSurface">
+  <div class="lane l1"></div>
+  <div class="lane l2"></div>
+  <div class="sidewalk leftSide"></div>
+  <div class="sidewalk rightSide"></div>
  </div>
 
- <section id="play">
-  <h2 id="gameTitle">Game</h2>
-  <div id="gameContent" class="gamearea"></div>
-  <div class="game-controls">
-   <button onclick="startGame(current)">↻ Restart</button>
-   <button onclick="closeGame()">✕ Close Game</button>
-  </div>
- </section>
+ <div id="rickshaw">🛺</div>
+ <div id="msg"></div>
 
- <section id="about" style="text-align:center;margin-top:45px">
-  <h2>About JR GAMES</h2>
-  <p style="color:#b4c2d8">A fun gaming world made for everyone. Play free games anytime, anywhere!</p>
- </section>
-</main>
+ <div id="startScreen">
+  <h1>🛺 JR DHAKA RICKSHAW</h1>
+  <p>
+   🔥 PREMIUM EDITION<br>
+   🛺 Beautiful Rickshaw Animation<br>
+   🏙️ Dhaka City Environment<br>
+   🔔 Realistic Sound Effects<br><br>
+   👨 Passenger = ৳50<br>
+   🪙 Coin = ৳10<br>
+   🚗 Accident = Game Over!
+  </p>
+  <h3 style="color:#ffd700">Best: <span id="best2">৳0</span></h3>
+  <button class="btn" onclick="startGame()">▶ PLAY GAME</button>
+  <button class="btn btn2" onclick="showHow()">❓ HOW TO PLAY</button>
+ </div>
 
-<footer>© 2026 JR GAMES. All Rights Reserved. 🎮</footer>
+</div>
+
+<div class="panel">
+ ⛽ Fuel: <span id="fuelText">100%</span>
+ <div id="fuelBar"><div id="fuelFill"></div></div>
+</div>
+
+<div class="controls">
+ <button onclick="moveLeft()">⬅️</button>
+ <button onclick="moveCenter()">🎯</button>
+ <button onclick="moveRight()">➡️</button>
+</div>
+
+<div class="soundControls">
+ <button onclick="toggleSound()" id="soundBtn">🔊 SOUND ON</button>
+ <button onclick="ringBell()">🔔 RICKSHAW BELL</button>
+ <button onclick="toggleMusic()" id="musicBtn">🎵 MUSIC ON</button>
+</div>
+
+<p class="small">🛺 JR GAMES • DHAKA RICKSHAW PREMIUM</p>
+</div>
 
 <script>
-let current='',played=0,timer=null,cleanup=null;
-const content=document.getElementById('gameContent');
-function filterGames(){
- const q=document.getElementById('search').value.toLowerCase();
- document.querySelectorAll('.card').forEach(c=>{
- c.style.display=c.dataset.name.includes(q)?'':'none';
+let money=0,passCount=0,dist=0,fuel=100;
+let playing=false,rickX=45,speed=4;
+let best=Number(localStorage.getItem("rickshawBest")||0);
+let soundOn=true,musicOn=false;
+let spawnTimer,gameTimer,animationFrame;
+let musicTimer=null;
+let roadOffset=0;
+
+const $=id=>document.getElementById(id);
+const road=$("road");
+
+$("best").innerText="৳ "+best;
+$("best2").innerText="৳ "+best;
+
+// AUDIO SYSTEM
+let audioCtx=null;
+
+function initAudio(){
+ if(!audioCtx){
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+ }
+ if(audioCtx.state==="suspended")audioCtx.resume();
+}
+
+function tone(freq,duration,type="sine",volume=.15){
+ if(!soundOn)return;
+ initAudio();
+ const osc=audioCtx.createOscillator();
+ const gain=audioCtx.createGain();
+ osc.type=type;
+ osc.frequency.value=freq;
+ gain.gain.setValueAtTime(volume,audioCtx.currentTime);
+ gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+ osc.connect(gain);
+ gain.connect(audioCtx.destination);
+ osc.start();
+ osc.stop(audioCtx.currentTime+duration);
+}
+
+function ringBell(){
+ tone(1100,.15,"sine",.2);
+ setTimeout(()=>tone(1500,.2,"sine",.15),100);
+}
+
+function coinSound(){
+ tone(900,.12);
+ setTimeout(()=>tone(1300,.2),100);
+}
+
+function passengerSound(){
+ tone(500,.15);
+ setTimeout(()=>tone(700,.2),130);
+}
+
+function crashSound(){
+ tone(120,.5,"sawtooth",.3);
+}
+
+function toggleSound(){
+ soundOn=!soundOn;
+ $("soundBtn").innerText=soundOn?"🔊 SOUND ON":"🔇 SOUND OFF";
+ if(soundOn)ringBell();
+}
+
+function startMusic(){
+ if(musicTimer||!musicOn)return;
+ let notes=[261,329,392,329,293,349,440,349];
+ let i=0;
+ musicTimer=setInterval(()=>{
+  if(playing&&musicOn){
+   tone(notes[i%notes.length],.28,"triangle",.035);
+   i++;
+  }
+ },400);
+}
+
+function stopMusic(){
+ clearInterval(musicTimer);
+ musicTimer=null;
+}
+
+function toggleMusic(){
+ musicOn=!musicOn;
+ $("musicBtn").innerText=musicOn?"🎵 MUSIC ON":"🎵 MUSIC OFF";
+ if(musicOn){initAudio();startMusic()}
+ else stopMusic();
+}
+
+// PLAYER
+function updateRick(){
+ $("rickshaw").style.left=rickX+"%";
+}
+function moveLeft(){
+ if(playing){rickX=Math.max(7,rickX-12);updateRick()}
+}
+function moveRight(){
+ if(playing){rickX=Math.min(81,rickX+12);updateRick()}
+}
+function moveCenter(){
+ if(playing){rickX=45;updateRick()}
+}
+
+// TOUCH CONTROL
+let dragging=false;
+
+road.addEventListener("pointerdown",e=>{
+ if(!playing)return;
+ dragging=true;
+ road.setPointerCapture(e.pointerId);
+ moveToPointer(e);
+});
+road.addEventListener("pointermove",e=>{
+ if(dragging&&playing)moveToPointer(e);
+});
+road.addEventListener("pointerup",()=>dragging=false);
+road.addEventListener("pointercancel",()=>dragging=false);
+
+function moveToPointer(e){
+ let rect=road.getBoundingClientRect();
+ rickX=Math.max(7,Math.min(81,(e.clientX-rect.left)/rect.width*100-8));
+ updateRick();
+}
+
+// KEYBOARD
+document.addEventListener("keydown",e=>{
+ if(e.key==="ArrowLeft"||e.key==="a")moveLeft();
+ if(e.key==="ArrowRight"||e.key==="d")moveRight();
+});
+
+// START
+function startGame(){
+ initAudio();
+ money=0;passCount=0;dist=0;fuel=100;
+ speed=4;rickX=45;playing=true;
+ updateRick();
+
+ $("money").innerText="৳ 0";
+ $("pass").innerText="0";
+ $("dist").innerText="0m";
+ $("fuelText").innerText="100%";
+ $("fuelFill").style.width="100%";
+ $("startScreen").style.display="none";
+ $("msg").style.display="none";
+
+ clearInterval(spawnTimer);
+ clearInterval(gameTimer);
+ cancelAnimationFrame(animationFrame);
+
+ document.querySelectorAll(".vehicle,.passenger,.coin").forEach(e=>e.remove());
+
+ spawnTimer=setInterval(()=>{
+  if(playing)spawnVehicle();
+ },850);
+
+ setIntervalPassenger();
+
+ gameTimer=setInterval(()=>{
+  if(!playing)return;
+
+  dist+=2;
+  fuel-=.22;
+
+  $("dist").innerText=dist+"m";
+  $("fuelText").innerText=Math.max(0,Math.floor(fuel))+"%";
+  $("fuelFill").style.width=Math.max(0,fuel)+"%";
+
+  if(dist>500)speed=5;
+  if(dist>1000)speed=6;
+  if(dist>2000)speed=7;
+
+  if(fuel<=0){
+   gameOver("⛽ FUEL FINISHED!");
+   return;
+  }
+  checkCollision();
+ },60);
+
+ animate();
+ if(musicOn)startMusic();
+}
+
+function setIntervalPassenger(){
+ clearInterval(passengerInterval);
+ passengerInterval=setInterval(()=>{
+  if(playing)spawnPassengerOrCoin();
+ },1250);
+}
+let passengerInterval;
+
+// SPAWN
+function spawnVehicle(){
+ let el=document.createElement("div");
+ el.className="vehicle";
+ let cars=["🚗","🚚","🚌","🚙","🏍️","🚕"];
+ el.innerText=cars[Math.floor(Math.random()*cars.length)];
+ el.style.left=(Math.random()*78+9)+"%";
+ el.style.top="-60px";
+ road.appendChild(el);
+}
+
+function spawnPassengerOrCoin(){
+ let el=document.createElement("div");
+ if(Math.random()<.5){
+  el.className="passenger";
+  el.innerText=Math.random()<.5?"🧍‍♂️":"🧍‍♀️";
+  el.dataset.type="pass";
+ }else{
+  el.className="coin";
+  el.innerText="🪙";
+  el.dataset.type="coin";
+ }
+ el.style.left=(Math.random()*78+9)+"%";
+ el.style.top="-50px";
+ road.appendChild(el);
+}
+
+// ANIMATION
+function animate(){
+ if(!playing)return;
+
+ roadOffset+=speed;
+ document.querySelectorAll(".lane").forEach(l=>{
+  l.style.backgroundPositionY=roadOffset+"px";
+ });
+ document.querySelectorAll(".vehicle,.passenger,.coin").forEach(el=>{
+  let top=parseFloat(el.style.top||"-50");
+  top+=speed+dist/500;
+  el.style.top=top+"px";
+  if(top>road.clientHeight+50)el.remove();
+ });
+
+ checkCollision();
+
+ animationFrame=requestAnimationFrame(animate);
+}
+
+// COLLISION
+function checkCollision(){
+ if(!playing)return;
+ let rRect=$("rickshaw").getBoundingClientRect();
+
+ document.querySelectorAll(".vehicle,.passenger,.coin").forEach(el=>{
+  let rect=el.getBoundingClientRect();
+  let hit=!(
+   rect.right<rRect.left+12||
+   rect.left>rRect.right-12||
+   rect.bottom<rRect.top+10||
+   rect.top>rRect.bottom-10
+  );
+
+  if(!hit)return;
+
+  if(el.classList.contains("vehicle")){
+   el.remove();
+   gameOver("💥 ACCIDENT!");
+   return;
+  }
+
+  if(el.dataset.type==="pass"){
+   passCount++;
+   money+=50;
+   $("pass").innerText=passCount;
+   showMsg("👋 PASSENGER +৳50");
+   passengerSound();
+   if(navigator.vibrate)navigator.vibrate(40);
+  }else if(el.dataset.type==="coin"){
+   money+=10;
+   showMsg("🪙 +৳10");
+   coinSound();
+  }
+
+  $("money").innerText="৳ "+money;
+  el.remove();
  });
 }
-function clearGame(){
- if(timer){clearInterval(timer);timer=null}
- if(cleanup){cleanup();cleanup=null}
-}
-function startGame(name){
- clearGame();current=name;
- document.getElementById('play').style.display='block';
- document.getElementById('play').scrollIntoView({behavior:'smooth'});
- played++;document.getElementById('played').textContent=played;
- const titles={snake:'🐍 Snake Game',tic:'⭕ Tic Tac Toe','2048':'🔢 2048 Puzzle',memory:'🃏 Memory Match',click:'⚡ Click Challenge'};
- document.getElementById('gameTitle').textContent=titles[name];
- if(name==='snake')snake();
- if(name==='tic')tic();
- if(name==='2048')game2048();
- if(name==='memory')memory();
- if(name==='click')clickGame();
-}
-function closeGame(){
- clearGame();document.getElementById('play').style.display='none';content.innerHTML='';
-}
 
-/* SNAKE */
-function snake(){
- content.innerHTML='<div class="score" id="ss">Score: 0</div><canvas id="snakeCanvas" width="320" height="320"></canvas><p class="hint">Use arrow keys or the buttons below to move.</p><div class="game-controls"><button onclick="snakeDir(0,-1)">⬆️</button><button onclick="snakeDir(-1,0)">⬅️</button><button onclick="snakeDir(0,1)">⬇️</button><button onclick="snakeDir(1,0)">➡️</button></div>';
- const c=document.getElementById('snakeCanvas'),ctx=c.getContext('2d');
- const size=16;let s=[{x:10,y:10}],d={x:1,y:0},next={x:1,y:0},food={x:5,y:5},score=0,alive=true;
- window.snakeDir=(x,y)=>{if(x!==-d.x||y!==-d.y)next={x,y}};
- function key(e){const k={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(k){e.preventDefault();snakeDir(...k)}}
- document.addEventListener('keydown',key);
- cleanup=()=>document.removeEventListener('keydown',key);
- function tick(){
- if(!alive)return;
- d=next;let h={x:s[0].x+d.x,y:s[0].y+d.y};
- if(h.x<0||h.y<0||h.x>=20||h.y>=20||s.some(p=>p.x===h.x&&p.y===h.y)){alive=false;clearInterval(timer);ctx.fillStyle='white';ctx.font='22px Arial';ctx.fillText('GAME OVER',92,160);return}
- s.unshift(h);
- if(h.x===food.x&&h.y===food.y){score++;document.getElementById('ss').textContent='Score: '+score;food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)}}else s.pop();
- ctx.fillStyle='#050c19';ctx.fillRect(0,0,320,320);
- ctx.fillStyle='#00eaff';s.forEach(p=>ctx.fillRect(p.x*size+1,p.y*size+1,14,14));
- ctx.fillStyle='#ff476f';ctx.fillRect(food.x*size+2,food.y*size+2,12,12);
+function showMsg(t){
+ let m=$("msg");
+ m.innerText=t;
+ m.style.display="block";
+ clearTimeout(msgTimer);
+ msgTimer=setTimeout(()=>m.style.display="none",700);
+}
+let msgTimer;
+
+// GAME OVER
+function gameOver(reason){
+ if(!playing)return;
+ playing=false;
+
+ clearInterval(spawnTimer);
+ clearInterval(gameTimer);
+ clearInterval(passengerInterval);
+ cancelAnimationFrame(animationFrame);
+
+ stopMusic();
+ crashSound();
+
+ document.querySelectorAll(".vehicle,.passenger,.coin").forEach(e=>e.remove());
+
+ if(money>best){
+  best=money;
+  localStorage.setItem("rickshawBest",best);
  }
- timer=setInterval(tick,140);
+
+ $("best").innerText="৳ "+best;
+ $("best2").innerText="৳ "+best;
+
+ $("startScreen").innerHTML=`
+ <h1>GAME OVER 😢</h1>
+ <h2 style="color:#ffd700">${reason}</h2>
+ <p style="font-size:19px">
+ 💰 Taka: <b style="color:#ffd700">৳ ${money}</b><br>
+ 👨 Passenger: ${passCount}<br>
+ 🛣️ Distance: ${dist}m<br>
+ 🏆 Best: ৳ ${best}
+ </p>
+ <button class="btn" onclick="startGame()">🔄 PLAY AGAIN</button>
+ `;
+ $("startScreen").style.display="flex";
+
+ if(navigator.vibrate)navigator.vibrate([100,50,150]);
 }
 
-/* TIC TAC TOE */
-function tic(){
- content.innerHTML='<div class="score" id="ts">Your turn: X</div><div id="board">'+Array.from({length:9},(_,i)=>'<button class="cell" onclick="ticMove('+i+')" id="cell'+i+'"></button>').join('')+'</div><p class="hint">Two players take turns. X versus O.</p>';
- let b=Array(9).fill(''),turn='X',done=false;
- window.ticMove=i=>{
- if(done||b[i])return;b[i]=turn;
- document.getElementById('cell'+i).textContent=turn;
- const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
- let win=wins.some(w=>w.every(x=>b[x]===turn));
- if(win){document.getElementById('ts').textContent=turn+' WINS! 🎉';done=true}
- else if(b.every(Boolean)){document.getElementById('ts').textContent='DRAW!';done=true}
- else{turn=turn==='X'?'O':'X';document.getElementById('ts').textContent='Your turn: '+turn}
- };
-}
-
-/* 2048 */
-function game2048(){
- content.innerHTML='<div class="score" id="s2048">Score: 0</div><div id="numbers"></div><p class="hint">Use arrow keys or swipe to combine equal numbers.</p>';
- let a=Array(16).fill(0),score=0;
- const board=document.getElementById('numbers');
- function add(){let empty=a.map((v,i)=>v===0?i:-1).filter(i=>i>=0);if(empty.length)a[empty[Math.floor(Math.random()*empty.length)]]=Math.random()<.9?2:4}
- function draw(){board.innerHTML=a.map(v=>'<div class="tile">'+(v||'')+'</div>').join('');document.getElementById('s2048').textContent='Score: '+score}
- function move(dir){
- let old=a.slice();
- for(let line=0;line<4;line++){
- let ids=Array.from({length:4},(_,i)=>dir==='left'?line*4+i:dir==='right'?line*4+3-i:dir==='up'?i*4+line:(3-i)*4+line);
- let vals=ids.map(i=>a[i]).filter(Boolean);
- for(let j=0;j<vals.length-1;j++)if(vals[j]===vals[j+1]){vals[j]*=2;score+=vals[j];vals.splice(j+1,1)}
- while(vals.length<4)vals.push(0);
- ids.forEach((id,i)=>a[id]=vals[i]);
- }
- if(a.some((v,i)=>v!==old[i]))add();
- draw();
- }
- function key(e){const dirs={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};if(dirs[e.key]){e.preventDefault();move(dirs[e.key])}}
- document.addEventListener('keydown',key);cleanup=()=>document.removeEventListener('keydown',key);
- let sx=0,sy=0;
- board.ontouchstart=e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY};
- board.ontouchend=e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))>20)move(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'))};
- add();add();draw();
-}
-
-/* MEMORY */
-function memory(){
- const icons=['🍎','🍌','🍇','🍒','🍉','🥝','🍍','🍓'];
- let deck=[...icons,...icons].sort(()=>Math.random()-.5),first=null,lock=false,matches=0,moves=0;
- content.innerHTML='<div class="score" id="ms">Moves: 0 | Pairs: 0/8</div><div class="memory">'+deck.map((_,i)=>'<button class="mem" id="m'+i+'" onclick="flip('+i+')">?</button>').join('')+'</div>';
- let opened=new Set();
- window.flip=i=>{
- if(lock||opened.has(i))return;
- document.getElementById('m'+i).textContent=deck[i];
- document.getElementById('m'+i).classList.add('open');opened.add(i);
- if(first===null){first=i;return}
- moves++;let f=first;first=null;
- if(deck[f]===deck[i]){
- matches++;document.getElementById('m'+f).classList.add('matched');document.getElementById('m'+i).classList.add('matched');
- }else{
- lock=true;timer=setTimeout(()=>{[f,i].forEach(n=>{document.getElementById('m'+n).textContent='?';document.getElementById('m'+n).classList.remove('open');opened.delete(n)});lock=false;timer=null},700);
- }
- document.getElementById('ms').textContent='Moves: '+moves+' | Pairs: '+matches+'/8';
- if(matches===8)document.getElementById('ms').textContent='🎉 YOU WIN! Moves: '+moves;
- };
-}
-
-/* CLICK CHALLENGE */
-function clickGame(){
- let count=0,left=10,started=false,ended=false;
- content.innerHTML='<div class="clickbox"><div class="score" id="cs">Clicks: 0</div><div id="time">Time: 10s</div><button id="clickBtn" onclick="doClick()">TAP ME!</button><p class="hint">Press START and tap as fast as you can!</p><button class="primary" onclick="resetClick()">START</button></div>';
- window.resetClick=()=>{
- clearGame();count=0;left=10;started=true;ended=false;
- document.getElementById('cs').textContent='Clicks: 0';
- document.getElementById('time').textContent='Time: 10s';
- document.getElementById('clickBtn').disabled=false;
- timer=setInterval(()=>{left--;document.getElementById('time').textContent='Time: '+left+'s';if(left<=0){clearInterval(timer);timer=null;ended=true;started=false;document.getElementById('clickBtn').disabled=true;document.getElementById('time').textContent='TIME UP! 🎉 Final Score: '+count}},1000);
- };
- window.doClick=()=>{if(!started||ended)return;count++;document.getElementById('cs').textContent='Clicks: '+count};
+function showHow(){
+ alert(
+ "🛺 HOW TO PLAY\n\n"+
+ "⬅️➡️ Button diye Rickshaw chalাও\n"+
+ "👆 Screen-e finger diye Rickshaw sorাও\n"+
+ "👨 Passenger = ৳50\n"+
+ "🪙 Coin = ৳10\n"+
+ "🚗 Gari lagle Game Over\n"+
+ "⛽ Fuel sesh hole Game Over\n"+
+ "🔔 Bell button diye ghonta bajাও\n"+
+ "🎵 Music ON/OFF korte paro"
+ );
 }
 </script>
 </body>
